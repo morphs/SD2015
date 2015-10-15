@@ -18,6 +18,8 @@ public class Resposta implements java.io.Serializable{
     public static final int FILE_NOT_FOUND = -2;
     public static final int FILE_WRITE_OK = 3;
     public static final int FILE_WRITE_ERROR = -3;
+    public static final int GET_LIST_OK = 4;
+    public static final int GET_LIST_ERROR = -4;
     //End Constantes
     
     //variaveis

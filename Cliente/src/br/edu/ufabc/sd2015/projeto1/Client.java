@@ -1,6 +1,5 @@
 package br.edu.ufabc.sd2015.projeto1;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextPane;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 public class Client extends JFrame {
 
 	private JPanel contentPane;
+	private Socket client;
 
 	/**
 	 * Launch the application.
@@ -41,6 +42,7 @@ public class Client extends JFrame {
 	}
 
 	/**
+	 * Construtor
 	 * Create the frame.
 	 */
 	public Client() {
@@ -52,15 +54,15 @@ public class Client extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		CaixaTexto = new JTextPane();
-		CaixaTexto.setBounds(12, 307, 676, 130);
-		contentPane.add(CaixaTexto);
+		caixaTexto = new JTextPane();
+		caixaTexto.setBounds(12, 307, 676, 130);
+		contentPane.add(caixaTexto);
 		 model = new DefaultListModel();
-		ListaArquivos = new JList(model);
-		ListaArquivos.setBounds(12, 26, 188, 244);
+		listaArquivos = new JList(model);
+		listaArquivos.setBounds(12, 26, 188, 244);
 		
 		
-		contentPane.add(ListaArquivos);
+		contentPane.add(listaArquivos);
 		
 		btnList = new JButton("List");
 		btnList.addActionListener(new ActionListener() {
@@ -72,6 +74,11 @@ public class Client extends JFrame {
 		contentPane.add(btnList);
 		
 		btnNew = new JButton("New");
+		btnNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RequestNewFile();
+			}
+		});
 		btnNew.setBounds(571, 49, 117, 25);
 		contentPane.add(btnNew);
 		
@@ -102,6 +109,10 @@ public class Client extends JFrame {
 		contentPane.add(formattedTextField_1);
 		
 		btnConectar = new JButton("Conectar");
+		btnConectar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnConectar.setBounds(310, 86, 117, 25);
 		contentPane.add(btnConectar);
 		
@@ -110,8 +121,10 @@ public class Client extends JFrame {
 		contentPane.add(lblSPraTestes);
 	}
 	
+	//Fim construtor
+	
 	public String getCurrentText(){
-		return CaixaTexto.getText();		
+		return caixaTexto.getText();		
 	}
 	
 	public void setListaDeArquivos(){
@@ -121,29 +134,31 @@ public class Client extends JFrame {
 	}
 	
 	public void RequestFilesList(){
-		Socket client;
 		try {
-			client = new Socket("localhost", 21000);
+			if(client == null || client.isConnected()){
+				client = new Socket("localhost", 21000);
+			}
+			
 			 client.setKeepAlive(true);
-		     ObjectOutputStream ClientOutput = new ObjectOutputStream(client.getOutputStream());		        
-		     Requisicao Request = new Requisicao();
-		     Request.setMessageType(Requisicao.GET_LIST);
-		     ClientOutput.writeObject(Request);
+		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
+		     Requisicao request = new Requisicao();
+		     request.setMessageType(Requisicao.GET_LIST);
+		     clientOutput.writeObject(request);
 		     
-		     ObjectInputStream  ClientInput  = new ObjectInputStream(client.getInputStream());
-	         Resposta Response = (Resposta)ClientInput.readObject();
+		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
+	         Resposta response = (Resposta)clientInput.readObject();
 	         
 	         
-	         if (Response.getMessageStatus() == Resposta.GET_LIST_OK){
-	        	   ListaDeArquivosArray = Response.getListFiles();
+	         if (response.getMessageStatus() == Resposta.GET_LIST_OK){
+	        	   listaDeArquivosArray = response.getListFiles();
 	        	  
-	        	   System.out.println( ListaDeArquivosArray.length);
-	        	   for(String s: ListaDeArquivosArray){
+	        	   System.out.println( listaDeArquivosArray.length);
+	        	   for(String s: listaDeArquivosArray){
 	        		   System.out.println(s);
 	        		   model.addElement(s);
 	        	   }
 	        	   System.out.println("getlistok");
-	               ListaArquivos.updateUI();
+	               listaArquivos.updateUI();
 	              
 	               
 	            }
@@ -164,11 +179,41 @@ public class Client extends JFrame {
        
 	}
 	
+	public void RequestNewFile(){
+		try {
+			//tentativa de conexão
+			if(client == null || client.isConnected()){
+				client = new Socket("localhost", 21000);
+			}
+			
+			 client.setKeepAlive(true);
+		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
+		     Requisicao request = new Requisicao();
+		     
+		     //Definindo a requisição
+		     request.setMessageType(Requisicao.NEW_FILE);
+		     request.setFileName(JOptionPane.showInputDialog("Entre com o nome do arquivo")+".txt");
+		     
+		     
+		     clientOutput.writeObject(request);
+		     
+		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
+	         Resposta response = (Resposta)clientInput.readObject();
+		}catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	
-	
-	private JTextPane CaixaTexto;
-	private JList ListaArquivos;
+	private JTextPane caixaTexto;
+	private JList listaArquivos;
 	private JButton btnList;
 	private JButton btnNew;
 	private JButton btnRead;
@@ -180,7 +225,7 @@ public class Client extends JFrame {
 	private JButton btnConectar;
 	private JLabel lblSPraTestes;
 	private DefaultListModel model;
-	private String[] ListaDeArquivosArray = {"test"};
+	private String[] listaDeArquivosArray = {"test"};
 	
 	
 	

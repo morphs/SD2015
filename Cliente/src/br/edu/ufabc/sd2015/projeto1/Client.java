@@ -28,7 +28,7 @@ public class Client extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Socket client;
-	private static final int PORTA = 21000;
+	private static final int PORTA = 21002;
 	/**
 	 * Launch the application.
 	 */
@@ -57,17 +57,17 @@ public class Client extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		caixaTexto = new JTextPane();
 		caixaTexto.setBounds(12, 307, 676, 130);
 		contentPane.add(caixaTexto);
-		 model = new DefaultListModel<String>();
+		model = new DefaultListModel<String>();
 		listaArquivos = new JList<String>(model);
 		listaArquivos.setBounds(12, 26, 188, 244);
-		
-		
+
+
 		contentPane.add(listaArquivos);
-		
+
 		btnList = new JButton("List");
 		btnList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -76,7 +76,7 @@ public class Client extends JFrame {
 		});
 		btnList.setBounds(571, 12, 117, 25);
 		contentPane.add(btnList);
-		
+
 		btnNew = new JButton("New");
 		btnNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -88,12 +88,12 @@ public class Client extends JFrame {
 						JOptionPane.showMessageDialog(null,"Nome inválido","Mensagem de erro",JOptionPane.ERROR_MESSAGE);
 					}
 				}
-				
+
 			}
 		});
 		btnNew.setBounds(571, 49, 117, 25);
 		contentPane.add(btnNew);
-		
+
 		btnRead = new JButton("Read");
 		btnRead.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -105,14 +105,14 @@ public class Client extends JFrame {
 				//
 				//Verificar erros mimimimi
 				//
-				
+
 				setCurrentText(resultado);
-				
+
 			}
 		});
 		btnRead.setBounds(571, 86, 117, 25);
 		contentPane.add(btnRead);
-		
+
 		btnWrite = new JButton("Write");
 		btnWrite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -123,25 +123,25 @@ public class Client extends JFrame {
 		});
 		btnWrite.setBounds(571, 123, 117, 25);
 		contentPane.add(btnWrite);
-		
+
 		lblArquivoAtual = new JLabel("Arquivo Atual:");
 		lblArquivoAtual.setBounds(12, 282, 352, 15);
 		contentPane.add(lblArquivoAtual);
-		
+
 		lblArquivosDisponvel = new JLabel("Arquivos Disponíveis:");
 		lblArquivosDisponvel.setBounds(12, 12, 188, 15);
 		contentPane.add(lblArquivosDisponvel);
-		
+
 		formattedTextField = new JFormattedTextField();
 		formattedTextField.setText("127.0.0.1");
 		formattedTextField.setBounds(246, 52, 171, 25);
 		contentPane.add(formattedTextField);
-		
+
 		formattedTextField_1 = new JFormattedTextField();
 		formattedTextField_1.setText("21000");
 		formattedTextField_1.setBounds(429, 52, 52, 25);
 		contentPane.add(formattedTextField_1);
-		
+
 		btnConectar = new JButton("Conectar");
 		btnConectar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -149,86 +149,42 @@ public class Client extends JFrame {
 		});
 		btnConectar.setBounds(310, 86, 117, 25);
 		contentPane.add(btnConectar);
-		
+
 		lblSPraTestes = new JLabel("Só pra testes");
 		lblSPraTestes.setBounds(245, 27, 137, 15);
 		contentPane.add(lblSPraTestes);
 	}
-	
+
 	//Fim construtor
-	
+
 	public String getCurrentText(){
 		return caixaTexto.getText();		
 	}
 	public void setCurrentText(String text){
 		caixaTexto.setText(text);		
 	}
-	
+
 	public void setListaDeArquivos(){
-		
+
 		//ListaArquivos.updateUI();
-		
+
 	}
-	
-	public void requestFilesList(){
-		try {
-			if(client == null || client.isConnected()){
-				client = new Socket("localhost", 21000);
-			}
-			
-			 client.setKeepAlive(true);
-		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
-		     Requisicao request = new Requisicao();
-		     request.setMessageType(Requisicao.GET_LIST);
-		     clientOutput.writeObject(request);
-		     
-		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
-	         Resposta response = (Resposta)clientInput.readObject();
-	         
-	         
-	         if (response.getMessageStatus() == Resposta.GET_LIST_OK){
-	        	   listaDeArquivosArray = response.getListFiles();
-	        	  model.clear();
-	        	   System.out.println( listaDeArquivosArray.length);
-	        	   for(String s: listaDeArquivosArray){
-	        		   System.out.println(s);
-	        		   model.addElement(s);
-	        	   }
-	        	   System.out.println("getlistok");
-	               listaArquivos.updateUI();
-	              
-	               
-	            }
-	            else{
-	                System.out.println("ops");
-	            }
-		     
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-       
-	}
-	
+
+
+
 	//Requisicao genérica
 	public Resposta request (Requisicao request){
 		try{
 			if(client == null || client.isConnected()){
 				client = new Socket("localhost", PORTA);
 			}
-			
-			 client.setKeepAlive(true);
-		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
-		     clientOutput.writeObject(request);
-		     
-		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
-	         return (Resposta)clientInput.readObject();
+
+			client.setKeepAlive(true);
+			ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
+			clientOutput.writeObject(request);
+
+			ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
+			return (Resposta)clientInput.readObject();
 		}catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -240,10 +196,37 @@ public class Client extends JFrame {
 			e.printStackTrace();
 		}
 		return null;
-		
+
 	}
 	//Fim requisicao genérica
-	
+
+	//Requisicao de lista de arquivos
+	public void requestFilesList(){
+		Requisicao request = new Requisicao();
+		request.setMessageType(Requisicao.GET_LIST);
+		Resposta response = request(request); 
+		if(response != null){
+			if (response.getMessageStatus() == Resposta.GET_LIST_OK){
+				listaDeArquivosArray = response.getListFiles();
+				model.clear();
+				System.out.println( listaDeArquivosArray.length);
+				for(String s: listaDeArquivosArray){
+					System.out.println(s);
+					model.addElement(s);
+				}
+				System.out.println("getlistok");
+				listaArquivos.updateUI();
+
+
+			}
+			else{
+				System.out.println("erro ao preencher a lista");
+			}   
+		}else{
+			System.out.println("Requisicao nula");
+		}
+	}
+
 	//Requisição de novo arquivo
 	public void requestNewFile(String name){
 		Requisicao req = new Requisicao();
@@ -273,7 +256,7 @@ public class Client extends JFrame {
 
 	}
 	//Fim requisição de novo arquivo
-	
+
 	//Requisição de leitura
 	private String requestFileRead(String fileName){
 		Requisicao req = new Requisicao();
@@ -282,44 +265,44 @@ public class Client extends JFrame {
 		Resposta response = request(req); 
 		String retorno = "";
 		if(response != null){
-		
-	         if (response.getMessageStatus() == Resposta.GET_FILE_OK){
-	        	   retorno = response.getFileContent();	  
-	        	   System.out.println("arquivo retornado");
-	            }
-	            else{
-	                System.out.println("Erro ao ler o arquivo");
-	            }
+
+			if (response.getMessageStatus() == Resposta.GET_FILE_OK){
+				retorno = response.getFileContent();	  
+				System.out.println("arquivo retornado");
+			}
+			else{
+				System.out.println("Erro ao ler o arquivo");
+			}
 		}else{
 			System.out.println("Requisicao nula");
 		}
 		return retorno;
 	}
 	//fimRequisição de leitura
-	
-	
+
+
 	//Requisição de escrita de arquivo
 	private void requestFileWrite(String fileName,String content){
 		Requisicao request = new Requisicao();
-	     request.setMessageType(Requisicao.WRITE_FILE);
-	     request.setFileName(fileName);
-	     request.setFileContent(content);
-	     Resposta response = request(request); 
-	     if(response != null){
-	    	 
-	         if (response.getMessageStatus() == Resposta.FILE_WRITE_OK){
-	        	   JOptionPane.showMessageDialog(null, "Arquivo escrito com sucesso!");
-	        	   setCurrentText("");
-	            }
-	            else{
-	                System.out.println("Erro ao escrever o arquivo");
-	            }
-	     }else{
-	    	 System.out.println("Requisicao nula");
-	     }
+		request.setMessageType(Requisicao.WRITE_FILE);
+		request.setFileName(fileName);
+		request.setFileContent(content);
+		Resposta response = request(request); 
+		if(response != null){
+
+			if (response.getMessageStatus() == Resposta.FILE_WRITE_OK){
+				JOptionPane.showMessageDialog(null, "Arquivo escrito com sucesso!");
+				setCurrentText("");
+			}
+			else{
+				System.out.println("Erro ao escrever o arquivo");
+			}
+		}else{
+			System.out.println("Requisicao nula");
+		}
 	}
 	//Fim Requisição de escrita de arquivo	
-	
+
 	private JTextPane caixaTexto;
 	private JList<String> listaArquivos;
 	private JButton btnList;
@@ -334,8 +317,8 @@ public class Client extends JFrame {
 	private JLabel lblSPraTestes;
 	private DefaultListModel<String> model;
 	private String[] listaDeArquivosArray = {"test"};
-	
-	
-	
-	
+
+
+
+
 }

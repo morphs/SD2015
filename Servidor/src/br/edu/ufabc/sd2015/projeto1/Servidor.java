@@ -10,32 +10,36 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class Servidor {
+public class Servidor extends Thread {
 	
-	static String sep = System.getProperty("file.separator");
-    static String Diretorio;
+	
+	private static final String SEP = System.getProperty("file.separator");
+    private  String diretorio;
+    private String svId;
+    private int porta;
     //static HashMap<Integer, File> mapa = new HashMap<Integer, File>();
-    static File Folder;
+    private File folder;
 
-	public static void main(String[] args) {
-		System.out.println("....");
-		
-		String quemsou = "1";
-		if(args.length != 0){quemsou=args[0];}
-		Diretorio = System.getProperty("user.home")+sep+"ServidorDeArquivos"+sep+quemsou+sep;
-		//Pasta do usuário
-		//               --ServidorDeArquivos
-	    //                                 --servidor (thread) 1,2 e 3....
-		Folder = new File(Diretorio);
-		System.out.println("Criando pasta:" +Folder);
-		if(!(Folder.exists() && Folder.isDirectory())){
-			Folder.mkdirs();
-			System.out.println("Diretório criado "+Folder);
+    public Servidor(String id,int porta){
+    	this.setSvId(id);
+    	this.porta = porta;
+    	diretorio = System.getProperty("user.home")+SEP+"ServidorDeArquivos"+SEP+id+SEP;
+		folder = new File(diretorio);
+		System.out.println("Criando pasta:" +folder);
+		if(!(folder.exists() && folder.isDirectory())){
+			folder.mkdirs();
+			System.out.println("Diretório criado "+folder);
 		}else{
 			System.out.println("Diretório já existe ou caminho inválido");
 		}
+
+    }
+	public  void run() {		
+		//Pasta do usuário
+		//               --ServidorDeArquivos
+	    //                                 --servidor (thread) 1,2 e 3....
 		//test
-//		File teste = new File(Diretorio+"arquivoteste");
+//		File teste = new File(diretorio+"arquivoteste");
 //		if(!teste.exists()){try {
 //			teste.createNewFile();
 //		} catch (IOException e) {		
@@ -51,8 +55,8 @@ public class Servidor {
 	
 		ServerSocket Server;
 		try {
-			System.out.println("Cria socket");
-			Server = new ServerSocket(21000);
+			System.out.println("Cria socket do server "+svId);
+			Server = new ServerSocket(porta);
 			do{
 				
 				Socket client = Server.accept();
@@ -79,7 +83,7 @@ public class Servidor {
 	                //CASO NOVO ARQUIVO
 					//
 				case Requisicao.NEW_FILE:
-					novoArquivo = new File(Diretorio+request.getFileName());
+					novoArquivo = new File(diretorio+request.getFileName());
 					if(!novoArquivo.exists()){
 						try {
 							novoArquivo.createNewFile();
@@ -98,7 +102,7 @@ public class Servidor {
 	                //CASO ESCRITA DE ARQUIVO
 					//	
 				case Requisicao.WRITE_FILE:
-					novoArquivo = new File(Diretorio+request.getFileName());
+					novoArquivo = new File(diretorio+request.getFileName());
 				     System.out.println("Escrevendo no arquivo:"+request.getFileName());
 					if(novoArquivo.exists()){
 						try {
@@ -122,12 +126,12 @@ public class Servidor {
 	                //CASO LEITURA DE ARQUIVOS
 					//
 				case Requisicao.READ_FILE:
-					novoArquivo = new File(Diretorio+request.getFileName());
+					novoArquivo = new File(diretorio+request.getFileName());
 					String content ="";
 					if(!novoArquivo.exists()){
 						response.setMessageStatus(Resposta.FILE_NOT_FOUND);
 					}else{
-						content = new String(Files.readAllBytes(Paths.get(Diretorio+request.getFileName())));
+						content = new String(Files.readAllBytes(Paths.get(diretorio+request.getFileName())));
 						response.setMessageStatus(Resposta.GET_FILE_OK);
 					}
 					response.setFileContent(content);
@@ -156,25 +160,24 @@ public class Servidor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-								
 					
-					 
-			            	
-			                 	
-			                 	
-			
-
-		
 	}
 
-	private static String[] getFileList(){
-		File[] vFiles = Folder.listFiles();
+	private  String[] getFileList(){
+		File[] vFiles = folder.listFiles();
+		System.out.println(folder.toString()+ "   "+vFiles.length);
 		String[] retorno = new String[vFiles.length];
 		for(int i =0;i<retorno.length;i++){
 			retorno[i]= vFiles[i].getName();
 		}
 		return retorno;
 }
+	public String getSvId() {
+		return svId;
+	}
+	public void setSvId(String svId) {
+		this.svId = svId;
+	}
 
 }
 

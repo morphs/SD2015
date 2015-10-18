@@ -67,7 +67,7 @@ public class Client extends JFrame {
 		btnList = new JButton("List");
 		btnList.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				RequestFilesList();
+				requestFilesList();
 			}
 		});
 		btnList.setBounds(571, 12, 117, 25);
@@ -76,13 +76,36 @@ public class Client extends JFrame {
 		btnNew = new JButton("New");
 		btnNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				RequestNewFile();
+				String name = JOptionPane.showInputDialog("Entre com o nome do arquivo");
+				if(name != null){
+					if(name.length() != 0){
+						requestNewFile(name);
+					}else{
+						JOptionPane.showMessageDialog(null,"Nome inválido","Mensagem de erro",JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				
 			}
 		});
 		btnNew.setBounds(571, 49, 117, 25);
 		contentPane.add(btnNew);
 		
 		btnRead = new JButton("Read");
+		btnRead.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listaArquivos.getSelectedValue().toString(); 
+				//
+				//Verificar erros nulo etc 
+				//
+				String resultado = requestFileRead(name);
+				//
+				//Verificar erros mimimimi
+				//
+				
+				caixaTexto.setText(resultado);
+				
+			}
+		});
 		btnRead.setBounds(571, 86, 117, 25);
 		contentPane.add(btnRead);
 		
@@ -133,7 +156,7 @@ public class Client extends JFrame {
 		
 	}
 	
-	public void RequestFilesList(){
+	public void requestFilesList(){
 		try {
 			if(client == null || client.isConnected()){
 				client = new Socket("localhost", 21000);
@@ -151,7 +174,7 @@ public class Client extends JFrame {
 	         
 	         if (response.getMessageStatus() == Resposta.GET_LIST_OK){
 	        	   listaDeArquivosArray = response.getListFiles();
-	        	  
+	        	  model.clear();
 	        	   System.out.println( listaDeArquivosArray.length);
 	        	   for(String s: listaDeArquivosArray){
 	        		   System.out.println(s);
@@ -179,7 +202,7 @@ public class Client extends JFrame {
        
 	}
 	
-	public void RequestNewFile(){
+	public void requestNewFile(String name){
 		try {
 			//tentativa de conexão
 			if(client == null || client.isConnected()){
@@ -192,13 +215,30 @@ public class Client extends JFrame {
 		     
 		     //Definindo a requisição
 		     request.setMessageType(Requisicao.NEW_FILE);
-		     request.setFileName(JOptionPane.showInputDialog("Entre com o nome do arquivo")+".txt");
+		     request.setFileName(name);
 		     
 		     
 		     clientOutput.writeObject(request);
 		     
 		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
 	         Resposta response = (Resposta)clientInput.readObject();
+	         
+	         if (response.getMessageStatus() == Resposta.FILE_WRITE_OK){
+	        	   listaDeArquivosArray = response.getListFiles();
+	        	  model.clear();
+	        	   System.out.println(listaDeArquivosArray.length);
+	        	   for(String s: listaDeArquivosArray){
+	        		   System.out.println(s);
+	        		   model.addElement(s);
+	        	   }
+	        	   System.out.println("File write ok");
+	               listaArquivos.updateUI();
+	              
+	               
+	            }
+	            else{
+	                System.out.println("File write error");
+	            }
 		}catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -209,6 +249,47 @@ public class Client extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private String requestFileRead(String fileName){
+		String retorno = "";
+		try {
+			if(client == null || client.isConnected()){
+				client = new Socket("localhost", 21000);
+			}
+			
+			 client.setKeepAlive(true);
+		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
+		     Requisicao request = new Requisicao();
+		     request.setMessageType(Requisicao.READ_FILE);
+		     request.setFileName(fileName);
+		     clientOutput.writeObject(request);
+		     
+		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
+	         Resposta response = (Resposta)clientInput.readObject();
+	         
+	         if (response.getMessageStatus() == Resposta.GET_FILE_OK){
+	        	   retorno = response.getFileContent();	  
+	        	   System.out.println("arquivo retornado");
+	            }
+	            else{
+	                System.out.println("Erro ao ler o arquivo");
+	            }
+		     
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			retorno = "";
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			retorno = "";
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			retorno = "";
+		}
+		return retorno;
 	}
 	
 	

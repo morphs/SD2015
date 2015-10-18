@@ -7,22 +7,29 @@ package br.edu.ufabc.sd2015.projeto1;
 
 /**
  *
- * @author isidro
+ * @author =)
  */
 public class Requisicao implements java.io.Serializable{
     
    
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// tipos de mensagem
     public static final int NEW_FILE = 0;
     public static final int GET_LIST = 1;
     public static final int READ_FILE = 2;
     public static final int WRITE_FILE = 3;
     
+    //Variáveis
     private int    messageType;
     private String fileContent;
     private String fileName;
-
+    //Fim variáveis
+    
+    //Gets e sets
     public String getFileName() {
 		return fileName;
 	}
@@ -31,16 +38,11 @@ public class Requisicao implements java.io.Serializable{
 		this.fileName = fileName;
 	}
 
-	/**
-     * @return the messageType
-     */
+	
     public int getMessageType() {
         return messageType;
     }
 
-    /**
-     * @param messageType the messageType to set
-     */
     public void setMessageType(int messageType) {
         this.messageType = messageType;
     }
@@ -52,6 +54,6 @@ public class Requisicao implements java.io.Serializable{
 	public void setFileContent(String fileContent) {
 		this.fileContent = fileContent;
 	}
-    
+    //Fim Gets e sets
     
 }

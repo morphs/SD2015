@@ -7,11 +7,16 @@ package br.edu.ufabc.sd2015.projeto1;
 
 /**
  *
- * @author isidro
+ * @author =)
  */
 public class Resposta implements java.io.Serializable{
 	
+	/**
+	 * 
+	 */
 	//Constantes
+	private static final long serialVersionUID = 1L;
+
     public static final int NEW_MESSAGE_OK    =  1;
     public static final int NEW_MESSAGE_ERROR = -1;
     public static final int GET_FILE_OK    =  2;

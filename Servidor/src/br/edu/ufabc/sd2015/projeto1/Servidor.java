@@ -1,22 +1,14 @@
 package br.edu.ufabc.sd2015.projeto1;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Servidor {
 	
@@ -50,7 +42,7 @@ public class Servidor {
 //		}}
 //		//test
 //		
-		File[] Files = Folder.listFiles();
+//		File[] Files = Folder.listFiles();
 //	   for (int i = 0; i < Files.length; i++) {
 //		mapa.put(i, Files[i]);
 //			}
@@ -71,14 +63,21 @@ public class Servidor {
 				
 				//Case da requisicao
 				File novoArquivo;
-                switch (request.getMessageType()) { 
-				case Requisicao.GET_LIST:
+                switch (request.getMessageType()) {
+                //
+                //CASO LISTA DE ARQUIVOS
+				//
+                case Requisicao.GET_LIST:
 					//String[] filesList = new String[mapa.size()];
 					//mapa.forEach((i,f) -> FilesList[i] = f.getName());
 					response.setListFiles(getFileList());
 			    	response.setMessageStatus(Resposta.GET_LIST_OK);
 					System.out.println("oks");
 					break;
+					
+					//
+	                //CASO NOVO ARQUIVO
+					//
 				case Requisicao.NEW_FILE:
 					novoArquivo = new File(Diretorio+request.getFileName());
 					if(!novoArquivo.exists()){
@@ -95,6 +94,9 @@ public class Servidor {
 					System.out.println("Arquivo criado com sucesso");
 					break;
 					
+					//
+	                //CASO ESCRITA DE ARQUIVO
+					//	
 				case Requisicao.WRITE_FILE:
 					novoArquivo = new File(Diretorio+request.getFileName());
 				     System.out.println("Escrevendo no arquivo:"+request.getFileName());
@@ -116,14 +118,16 @@ public class Servidor {
 					}
 					
 					break;
-					
+					//
+	                //CASO LEITURA DE ARQUIVOS
+					//
 				case Requisicao.READ_FILE:
 					novoArquivo = new File(Diretorio+request.getFileName());
 					String content ="";
 					if(!novoArquivo.exists()){
 						response.setMessageStatus(Resposta.FILE_NOT_FOUND);
 					}else{
-						content = new String(java.nio.file.Files.readAllBytes(Paths.get(Diretorio+request.getFileName())));
+						content = new String(Files.readAllBytes(Paths.get(Diretorio+request.getFileName())));
 						response.setMessageStatus(Resposta.GET_FILE_OK);
 					}
 					response.setFileContent(content);
@@ -133,6 +137,8 @@ public class Servidor {
 					System.out.println("Requisição inválida");
 					break;
 				}
+                
+                //Fechando tudo e enviando dados
                  System.out.println("enviando...");
 				 ObjectOutputStream serverOutput = new ObjectOutputStream(client.getOutputStream());
 				 serverOutput.writeObject(response);	                

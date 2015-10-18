@@ -22,9 +22,13 @@ import java.awt.event.ActionEvent;
 
 public class Client extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Socket client;
-
+	private static final int PORTA = 21000;
 	/**
 	 * Launch the application.
 	 */
@@ -57,8 +61,8 @@ public class Client extends JFrame {
 		caixaTexto = new JTextPane();
 		caixaTexto.setBounds(12, 307, 676, 130);
 		contentPane.add(caixaTexto);
-		 model = new DefaultListModel();
-		listaArquivos = new JList(model);
+		 model = new DefaultListModel<String>();
+		listaArquivos = new JList<String>(model);
 		listaArquivos.setBounds(12, 26, 188, 244);
 		
 		
@@ -102,7 +106,7 @@ public class Client extends JFrame {
 				//Verificar erros mimimimi
 				//
 				
-				caixaTexto.setText(resultado);
+				setCurrentText(resultado);
 				
 			}
 		});
@@ -113,7 +117,7 @@ public class Client extends JFrame {
 		btnWrite.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = listaArquivos.getSelectedValue().toString(); 
-				String content = caixaTexto.getText(); 
+				String content = getCurrentText(); 
 				requestFileWrite(name,content);
 			}
 		});
@@ -155,6 +159,9 @@ public class Client extends JFrame {
 	
 	public String getCurrentText(){
 		return caixaTexto.getText();		
+	}
+	public void setCurrentText(String text){
+		caixaTexto.setText(text);		
 	}
 	
 	public void setListaDeArquivos(){
@@ -209,43 +216,19 @@ public class Client extends JFrame {
        
 	}
 	
-	public void requestNewFile(String name){
-		try {
-			//tentativa de conexão
+	//Requisicao genérica
+	public Resposta request (Requisicao request){
+		try{
 			if(client == null || client.isConnected()){
-				client = new Socket("localhost", 21000);
+				client = new Socket("localhost", PORTA);
 			}
 			
 			 client.setKeepAlive(true);
 		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
-		     Requisicao request = new Requisicao();
-		     
-		     //Definindo a requisição
-		     request.setMessageType(Requisicao.NEW_FILE);
-		     request.setFileName(name);
-		     
-		     
 		     clientOutput.writeObject(request);
 		     
 		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
-	         Resposta response = (Resposta)clientInput.readObject();
-	         
-	         if (response.getMessageStatus() == Resposta.FILE_WRITE_OK){
-	        	   listaDeArquivosArray = response.getListFiles();
-	        	  model.clear();
-	        	   System.out.println(listaDeArquivosArray.length);
-	        	   for(String s: listaDeArquivosArray){
-	        		   System.out.println(s);
-	        		   model.addElement(s);
-	        	   }
-	        	   System.out.println("File write ok");
-	               listaArquivos.updateUI();
-	              
-	               
-	            }
-	            else{
-	                System.out.println("File write error");
-	            }
+	         return (Resposta)clientInput.readObject();
 		}catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,25 +239,50 @@ public class Client extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
+		
 	}
+	//Fim requisicao genérica
 	
-	private String requestFileRead(String fileName){
-		String retorno = "";
-		try {
-			if(client == null || client.isConnected()){
-				client = new Socket("localhost", 21000);
+	//Requisição de novo arquivo
+	public void requestNewFile(String name){
+		Requisicao req = new Requisicao();
+		req.setMessageType(Requisicao.NEW_FILE);
+		req.setFileName(name);
+		Resposta response = request(req); 
+		if(response != null){
+			if (response.getMessageStatus() == Resposta.FILE_WRITE_OK){
+				listaDeArquivosArray = response.getListFiles();
+				model.clear();
+				System.out.println(listaDeArquivosArray.length);
+				for(String s: listaDeArquivosArray){
+					System.out.println(s);
+					model.addElement(s);
+				}
+				System.out.println("File write ok");
+				listaArquivos.updateUI();
+
+
 			}
-			
-			 client.setKeepAlive(true);
-		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
-		     Requisicao request = new Requisicao();
-		     request.setMessageType(Requisicao.READ_FILE);
-		     request.setFileName(fileName);
-		     clientOutput.writeObject(request);
-		     
-		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
-	         Resposta response = (Resposta)clientInput.readObject();
-	         
+			else{
+				System.out.println("File write error");
+			}
+		}else{
+			System.out.println("Requisicao nula");
+		}
+
+	}
+	//Fim requisição de novo arquivo
+	
+	//Requisição de leitura
+	private String requestFileRead(String fileName){
+		Requisicao req = new Requisicao();
+		req.setMessageType(Requisicao.READ_FILE);
+		req.setFileName(fileName);
+		Resposta response = request(req); 
+		String retorno = "";
+		if(response != null){
+		
 	         if (response.getMessageStatus() == Resposta.GET_FILE_OK){
 	        	   retorno = response.getFileContent();	  
 	        	   System.out.println("arquivo retornado");
@@ -282,65 +290,38 @@ public class Client extends JFrame {
 	            else{
 	                System.out.println("Erro ao ler o arquivo");
 	            }
-		     
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			retorno = "";
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			retorno = "";
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			retorno = "";
+		}else{
+			System.out.println("Requisicao nula");
 		}
 		return retorno;
 	}
+	//fimRequisição de leitura
 	
+	
+	//Requisição de escrita de arquivo
 	private void requestFileWrite(String fileName,String content){
-		
-		try {
-			if(client == null || client.isConnected()){
-				client = new Socket("localhost", 21000);
-			}
-			
-			 client.setKeepAlive(true);
-		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
-		     Requisicao request = new Requisicao();
-		     request.setMessageType(Requisicao.WRITE_FILE);
-		     request.setFileName(fileName);
-		     request.setFileContent(content);
-		     clientOutput.writeObject(request);
-		     
-		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
-	         Resposta response = (Resposta)clientInput.readObject();
-	         
+		Requisicao request = new Requisicao();
+	     request.setMessageType(Requisicao.WRITE_FILE);
+	     request.setFileName(fileName);
+	     request.setFileContent(content);
+	     Resposta response = request(request); 
+	     if(response != null){
+	    	 
 	         if (response.getMessageStatus() == Resposta.FILE_WRITE_OK){
 	        	   JOptionPane.showMessageDialog(null, "Arquivo escrito com sucesso!");
+	        	   setCurrentText("");
 	            }
 	            else{
 	                System.out.println("Erro ao escrever o arquivo");
 	            }
-		     
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		
-		}
+	     }else{
+	    	 System.out.println("Requisicao nula");
+	     }
 	}
-	
+	//Fim Requisição de escrita de arquivo	
 	
 	private JTextPane caixaTexto;
-	private JList listaArquivos;
+	private JList<String> listaArquivos;
 	private JButton btnList;
 	private JButton btnNew;
 	private JButton btnRead;
@@ -351,7 +332,7 @@ public class Client extends JFrame {
 	private JFormattedTextField formattedTextField_1;
 	private JButton btnConectar;
 	private JLabel lblSPraTestes;
-	private DefaultListModel model;
+	private DefaultListModel<String> model;
 	private String[] listaDeArquivosArray = {"test"};
 	
 	

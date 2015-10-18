@@ -110,6 +110,13 @@ public class Client extends JFrame {
 		contentPane.add(btnRead);
 		
 		btnWrite = new JButton("Write");
+		btnWrite.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String name = listaArquivos.getSelectedValue().toString(); 
+				String content = caixaTexto.getText(); 
+				requestFileWrite(name,content);
+			}
+		});
 		btnWrite.setBounds(571, 123, 117, 25);
 		contentPane.add(btnWrite);
 		
@@ -290,6 +297,45 @@ public class Client extends JFrame {
 			retorno = "";
 		}
 		return retorno;
+	}
+	
+	private void requestFileWrite(String fileName,String content){
+		
+		try {
+			if(client == null || client.isConnected()){
+				client = new Socket("localhost", 21000);
+			}
+			
+			 client.setKeepAlive(true);
+		     ObjectOutputStream clientOutput = new ObjectOutputStream(client.getOutputStream());		        
+		     Requisicao request = new Requisicao();
+		     request.setMessageType(Requisicao.WRITE_FILE);
+		     request.setFileName(fileName);
+		     request.setFileContent(content);
+		     clientOutput.writeObject(request);
+		     
+		     ObjectInputStream  clientInput  = new ObjectInputStream(client.getInputStream());
+	         Resposta response = (Resposta)clientInput.readObject();
+	         
+	         if (response.getMessageStatus() == Resposta.FILE_WRITE_OK){
+	        	   JOptionPane.showMessageDialog(null, "Arquivo escrito com sucesso!");
+	            }
+	            else{
+	                System.out.println("Erro ao escrever o arquivo");
+	            }
+		     
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		
+		}
 	}
 	
 	

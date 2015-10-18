@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -95,6 +96,24 @@ public class Servidor {
 					break;
 					
 				case Requisicao.WRITE_FILE:
+					novoArquivo = new File(Diretorio+request.getFileName());
+				     System.out.println("Escrevendo no arquivo:"+request.getFileName());
+					if(novoArquivo.exists()){
+						try {
+							PrintWriter out = new PrintWriter(novoArquivo);
+							out.print(request.getFileContent());
+							out.flush();
+							out.close();
+							  System.out.println("Escrita certa");
+							response.setMessageStatus(Resposta.FILE_WRITE_OK);
+						} catch (IOException e) {
+							response.setMessageStatus(Resposta.FILE_WRITE_ERROR);
+							System.out.println("Erro ao escrever no arquivo:"+e.getMessage());
+						}
+					}else{
+						response.setMessageStatus(Resposta.FILE_NOT_FOUND);
+						System.out.println("Arquivo não existe!");
+					}
 					
 					break;
 					

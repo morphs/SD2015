@@ -1,6 +1,8 @@
 package br.edu.ufabc.sd2015.servidor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,6 +11,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import br.edu.ufabc.sd2015.comuns.Requisicao;
 import br.edu.ufabc.sd2015.comuns.Resposta;
@@ -20,7 +25,7 @@ public class Servidor extends Thread {
     private  String diretorio;
     private String svId;
     private int porta;
-    //static HashMap<Integer, File> mapa = new HashMap<Integer, File>();
+
     private File folder;
 
     public Servidor(String id,int porta){
@@ -38,23 +43,6 @@ public class Servidor extends Thread {
 
     }
 	public  void run() {		
-		//Pasta do usuário
-		//               --ServidorDeArquivos
-	    //                                 --servidor (thread) 1,2 e 3....
-		//test
-//		File teste = new File(diretorio+"arquivoteste");
-//		if(!teste.exists()){try {
-//			teste.createNewFile();
-//		} catch (IOException e) {		
-//		}}
-//		//test
-//		
-//		File[] Files = Folder.listFiles();
-//	   for (int i = 0; i < Files.length; i++) {
-//		mapa.put(i, Files[i]);
-//			}
-//	   
-		//mapa.forEach((i,f) -> System.out.println(String.valueOf(i)+" : "+f.getAbsolutePath()));  //test
 	
 		ServerSocket Server;
 		try {
@@ -75,11 +63,10 @@ public class Servidor extends Thread {
                 //CASO LISTA DE ARQUIVOS
 				//
                 case Requisicao.GET_LIST:
-					//String[] filesList = new String[mapa.size()];
-					//mapa.forEach((i,f) -> FilesList[i] = f.getName());
+					
 					response.setListFiles(getFileList());
 			    	response.setMessageStatus(Resposta.GET_LIST_OK);
-					System.out.println("oks");
+					//System.out.println("oks");
 					break;
 					
 					//
@@ -146,7 +133,7 @@ public class Servidor extends Thread {
 				}
                 
                 //Fechando tudo e enviando dados
-                 System.out.println("enviando...");
+               System.out.println("enviando...");
 				 ObjectOutputStream serverOutput = new ObjectOutputStream(client.getOutputStream());
 				 serverOutput.writeObject(response);	                
 				 
@@ -166,15 +153,53 @@ public class Servidor extends Thread {
 					
 	}
 
-	private  String[] getFileList(){
+	private  String[][] getFileList(){
 		File[] vFiles = folder.listFiles();
 		System.out.println(folder.toString()+ "   "+vFiles.length);
-		String[] retorno = new String[vFiles.length];
-		for(int i =0;i<retorno.length;i++){
-			retorno[i]= vFiles[i].getName();
+		String[][] retorno = new String[2][vFiles.length];
+		for(int i =0;i<vFiles.length;i++){
+			retorno[0][i] = vFiles[i].getName();
+			retorno[1][i] = MD5(vFiles[i]);
 		}
 		return retorno;
-}
+	}
+
+	
+	public String MD5(File file){
+		
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			 FileInputStream fis = new FileInputStream(file);
+			    byte[] dataBytes = new byte[1024];
+			 
+			    int nread = 0; 
+			 
+			    while ((nread = fis.read(dataBytes)) != -1) {
+			      md.update(dataBytes, 0, nread);
+			    };
+			 
+			    byte[] mdbytes = md.digest();
+			 
+			    
+			    StringBuffer sb = new StringBuffer("");
+			    for (int i = 0; i < mdbytes.length; i++) {
+			    	sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
+			    }
+			    return sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	  
+        catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	 
+	   
+	}
+	
+	
 	public String getSvId() {
 		return svId;
 	}

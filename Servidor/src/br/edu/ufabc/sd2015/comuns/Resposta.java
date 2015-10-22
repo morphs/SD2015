@@ -5,6 +5,8 @@
  */
 package br.edu.ufabc.sd2015.comuns;
 
+import java.util.Arrays;
+
 /**
  *
  * @author =)
@@ -30,7 +32,7 @@ public class Resposta implements java.io.Serializable{
     //variaveis
     private int messageStatus;
     private String fileContent;
-    private String[] listFiles;
+    private String[][] listFiles;
     //End Variaveis
     
     
@@ -50,10 +52,15 @@ public class Resposta implements java.io.Serializable{
     }
  
 	public String[] getListFiles() {
-		return listFiles;
+		System.out.println(Arrays.deepToString(listFiles[0]));
+		return listFiles[0];
+	}
+	
+	public String[] getListFilesMD5() {
+		return listFiles[1];
 	}
 
-	public void setListFiles(String[] listFiles) {
+	public void setListFiles(String[][] listFiles) {
 		this.listFiles = listFiles;
 	}
 

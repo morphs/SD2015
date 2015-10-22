@@ -119,28 +119,6 @@ public class Client extends JFrame implements Runnable {
 		lblArquivosDisponvel = new JLabel("Arquivos Disponíveis:");
 		lblArquivosDisponvel.setBounds(12, 12, 188, 15);
 		contentPane.add(lblArquivosDisponvel);
-
-		formattedTextField = new JFormattedTextField();
-		formattedTextField.setText("127.0.0.1");
-		formattedTextField.setBounds(246, 52, 171, 25);
-		contentPane.add(formattedTextField);
-
-		formattedTextField_1 = new JFormattedTextField();
-		formattedTextField_1.setText("21000");
-		formattedTextField_1.setBounds(429, 52, 52, 25);
-		contentPane.add(formattedTextField_1);
-
-		btnConectar = new JButton("Conectar");
-		btnConectar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnConectar.setBounds(310, 86, 117, 25);
-		contentPane.add(btnConectar);
-
-		lblSPraTestes = new JLabel("Só pra testes");
-		lblSPraTestes.setBounds(245, 27, 137, 15);
-		contentPane.add(lblSPraTestes);
 	}
 
 	//Fim construtor
@@ -299,10 +277,6 @@ public class Client extends JFrame implements Runnable {
 	private JButton btnWrite;
 	private JLabel lblArquivoAtual;
 	private JLabel lblArquivosDisponvel;
-	private JFormattedTextField formattedTextField;
-	private JFormattedTextField formattedTextField_1;
-	private JButton btnConectar;
-	private JLabel lblSPraTestes;
 	private DefaultListModel<String> model;
 	private String[] listaDeArquivosArray = {"test"};
 	@Override

@@ -1,12 +1,9 @@
-package br.edu.ufabc.sd2015.cliente;
+
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import br.edu.ufabc.sd2015.comuns.Requisicao;
-import br.edu.ufabc.sd2015.comuns.Resposta;
-import br.edu.ufabc.sd2015.comuns.ServerInterface;
 
 import javax.swing.JTextPane;
 import javax.swing.JList;
@@ -25,28 +22,47 @@ import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 
-public class Client extends JFrame implements Runnable {
+public class Client extends JFrame {
 
 	/**
 	 * 
 	 */
+	private ServerInterface controller;
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Socket client;
 	private static final int PORTA = 20000;
 
 
-	/**
-	 * Construtor
-	 * Create the frame.
-	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					System.out.println("client.....");
+					Client frame = new Client();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+
+
+	
+	
+	
+	
 	public Client() {
 		
 		try {
-			ServerInterface controller = (ServerInterface) Naming.lookup("rmi://localhost/Servidor/Controller");
+			controller = (ServerInterface) Naming.lookup("rmi://localhost/Servidor/Controller/");
 			System.out.println("deu bom");
+			
 		} catch (MalformedURLException e1) {
 		//	JOptionPane.showMessageDialog(getComponent(0), "chu");
 			e1.printStackTrace();
@@ -95,7 +111,14 @@ public class Client extends JFrame implements Runnable {
 				String name = JOptionPane.showInputDialog("Entre com o nome do arquivo");
 				if(name != null){
 					if(name.length() != 0){
-						requestNewFile(name);
+						try {
+							System.out.println("try");
+							controller.newFile(name);
+							System.out.println("new file ok");
+						} catch (RemoteException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}else{
 						JOptionPane.showMessageDialog(null,"Nome inválido","Mensagem de erro",JOptionPane.ERROR_MESSAGE);
 					}
@@ -303,18 +326,6 @@ public class Client extends JFrame implements Runnable {
 	private JLabel lblArquivosDisponvel;
 	private DefaultListModel<String> model;
 	private String[] listaDeArquivosArray = {"test"};
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		try {
-			Client frame = new Client();
-			frame.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-
 
 
 

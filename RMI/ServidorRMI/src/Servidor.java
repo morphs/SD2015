@@ -43,53 +43,6 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 
     }
 
-	private  String[][] getFileList(){
-		File[] vFiles = folder.listFiles();
-		System.out.println(folder.toString()+ "   "+vFiles.length);
-		String[][] retorno = new String[2][vFiles.length];
-		for(int i =0;i<vFiles.length;i++){
-			retorno[0][i] = vFiles[i].getName();
-			retorno[1][i] = MD5(vFiles[i]);
-		}
-		return retorno;
-	}
-
-	
-	public String MD5(File file){
-		
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			 FileInputStream fis = new FileInputStream(file);
-			    byte[] dataBytes = new byte[1024];
-			 
-			    int nread = 0; 
-			 
-			    while ((nread = fis.read(dataBytes)) != -1) {
-			      md.update(dataBytes, 0, nread);
-			    };
-			 
-			    byte[] mdbytes = md.digest();
-			 
-			    
-			    StringBuffer sb = new StringBuffer("");
-			    for (int i = 0; i < mdbytes.length; i++) {
-			    	sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-			    }
-			    fis.close();
-			    return sb.toString();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	  
-        catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	 
-	   
-	}
-	
 	
 	public String getSvId() {
 		return svId;
@@ -159,17 +112,6 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 	
 	}
 
-	
-	public String delteFile(String filename) throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	public void test() throws RemoteException {
-		System.out.println("oi, eu sou o server");
-		
-	}
 
 }
 

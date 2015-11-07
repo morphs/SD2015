@@ -13,7 +13,6 @@ public interface ServerInterface extends Remote {
 	
 	public String readFile(String filename) throws RemoteException;
 	
-	public String delteFile(String filename) throws RemoteException;
 
 	
 	

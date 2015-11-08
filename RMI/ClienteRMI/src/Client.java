@@ -1,39 +1,50 @@
 
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
-
-import javax.swing.JTextPane;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JFormattedTextField;
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
 
 public class Client extends JFrame {
 
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = -4072279396821515725L;
+	/**
+	 * 
+	 */
+	//variaveis
 	private ServerInterface controller;
 	private JPanel contentPane;
-
+	private JTextPane caixaTexto;
+	private JList<String> listaArquivos;
+	private JButton btnList;
+	private JButton btnNew;
+	private JButton btnRead;
+	private JButton btnWrite;
+	private JLabel lblArquivoAtual;
+	private JLabel lblArquivosDisponvel;
+	private DefaultListModel<String> model;
+	
+	//fim variaveis
+	
+	//main
 	public static void main(String[] args) {
+		//thread
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -41,27 +52,30 @@ public class Client extends JFrame {
 					Client frame = new Client();
 					frame.setVisible(true);
 				} catch (Exception e) {
+					System.out.println("Erro na main do client: "+e.getMessage());
 					e.printStackTrace();
 				}
 			}
 		});
 	}
-
+	// fim main
 	
-	
+	//construtor
 	public Client() {
 		
 		try {
 			controller = (ServerInterface) Naming.lookup("rmi://localhost/Servidor/Controller/");
-			System.out.println("deu bom");
+			System.out.println("binder encontrado");
 			
 		} catch (MalformedURLException e1) {
-		
+		System.out.println("Erro de url mal formada:"+e1.getMessage());
 			e1.printStackTrace();
 		} catch (RemoteException e1) {
+			System.out.println("Erro de falha remota:"+e1.getMessage());
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (NotBoundException e1) {
+			System.out.println("Erro de bind ou conexão:"+e1.getMessage());
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -197,16 +211,7 @@ public class Client extends JFrame {
 	}
 	
 
-	private JTextPane caixaTexto;
-	private JList<String> listaArquivos;
-	private JButton btnList;
-	private JButton btnNew;
-	private JButton btnRead;
-	private JButton btnWrite;
-	private JLabel lblArquivoAtual;
-	private JLabel lblArquivosDisponvel;
-	private DefaultListModel<String> model;
-	private String[] listaDeArquivosArray = {"test"};
+
 
 
 

@@ -1,32 +1,32 @@
 
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 
 
 public class Servidor extends UnicastRemoteObject implements ServerInterface{
 	
 	
+	/**
+	 * 
+	 */
+	
+	//Variáveis 
+	private static final long serialVersionUID = 1420785107657269733L;
 	private static final String SEP = System.getProperty("file.separator");
     private String diretorio;
     private String svId;
 
     private File folder;
 
+    //Fim variáveis
+    //Construtor
+    
     public Servidor(String id) throws RemoteException{
     	
     	
@@ -43,14 +43,19 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 
     }
 
+    //Fim Construtor
 	
+    
+    //Gets e sets
 	public String getSvId() {
 		return svId;
 	}
 	public void setSvId(String svId) {
 		this.svId = svId;
 	}
+	//Fim gets e sets
 	
+	//Listar arquivos
 	public String[] getList() throws RemoteException {
 		File[] vFiles = folder.listFiles();
 		String[] fileList = new String[vFiles.length];
@@ -59,6 +64,8 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 		}		
 		return fileList;
 	}
+	
+	//Métodos de arquivos
 	
 	public int newFile(String filename) throws RemoteException {
 		System.out.println("servidor: newFfile");
@@ -100,7 +107,6 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 	}
 	
 	public String readFile(String filename) throws RemoteException {
-		File newFile  = new File(diretorio+filename);
 		String content ="";	
 				try {
 					content = new String(Files.readAllBytes(Paths.get(diretorio+filename)));
@@ -111,7 +117,7 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 				}
 	
 	}
-
+// Fim métodos de arquivos
 
 }
 

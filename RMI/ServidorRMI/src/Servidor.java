@@ -8,10 +8,8 @@ import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-
 public class Servidor extends UnicastRemoteObject implements ServerInterface{
-	
-	
+		
 	/**
 	 * 
 	 */
@@ -23,17 +21,15 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
     private String svId;
 
     private File folder;
-
     //Fim variáveis
-    //Construtor
-    
+  
+    //Construtor 
     public Servidor(String id) throws RemoteException{
-    	
-    	
+   	
     	this.setSvId(id);
     	diretorio = System.getProperty("user.home")+SEP+"ServidorDeArquivos"+SEP+id+SEP;
 		folder = new File(diretorio);
-		System.out.println("Criando pasta:" +folder);
+		System.out.println("Criando diretório:" +folder);
 		if(!(folder.exists() && folder.isDirectory())){
 			folder.mkdirs();
 			System.out.println("Diretório criado "+folder);
@@ -44,8 +40,7 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
     }
 
     //Fim Construtor
-	
-    
+	 
     //Gets e sets
 	public String getSvId() {
 		return svId;
@@ -66,34 +61,33 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 	}
 	
 	//Métodos de arquivos
-	
 	public int newFile(String filename) throws RemoteException {
-		System.out.println("servidor: newFfile");
+		System.out.println("servidor: newFile");
 		File newFile = new File(diretorio+filename);
 		if(!newFile.exists()){
 			try {
 				newFile.createNewFile();
-				System.out.println(newFile.getAbsolutePath()+" criado");
+				System.out.println(newFile.getAbsolutePath()+" criado.");
 				
 			} catch (IOException e) {				
 				System.out.println("Erro ao criar novo arquivo:"+e.getMessage());
 				return ServerInterface.ERROR;
 			}
 		}		
-		System.out.println("Arquivo criado com sucesso");
+		System.out.println("Arquivo criado com sucesso!");
 		return ServerInterface.OK;
 	}
 	
 	public int writeFile(String filename, String content) throws RemoteException {
 		File newFile = new File(diretorio+filename);
-	     System.out.println("Escrevendo no arquivo "+filename);
+	     System.out.println("Escrevendo no arquivo: "+filename);
 		if(newFile.exists()){
 			try {
 				PrintWriter out = new PrintWriter(newFile);
 				out.print(content);
 				out.flush();
 				out.close();
-				  System.out.println("Escrita certa");
+				System.out.println("Escrita bem-sucedida!");
 				
 			} catch (IOException e) {
 				System.out.println("Erro ao escrever no arquivo:"+e.getMessage());
@@ -109,7 +103,7 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 	public String readFile(String filename) throws RemoteException {
 		String content ="";	
 				try {
-					content = new String(Files.readAllBytes(Paths.get(diretorio+filename)));
+					content = new String(Files.readAllBytes(Paths.get(diretorio+filename, null)));
 					return content;					
 				} catch (IOException e) {					
 					System.out.println("Erro ao ler o arquivo:"+e.getMessage());

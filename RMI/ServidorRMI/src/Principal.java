@@ -24,7 +24,7 @@ public class Principal {
 			//Define o controller
 			ServerInterface controller  = new Controller(serversNumber);
 			Naming.rebind("rmi://localhost/Servidor/Controller/", controller);
-			System.out.println("rodando");
+			System.out.println("Rodando...");
 			
 		} catch (RemoteException e1) {
 			// TODO Auto-generated catch block
@@ -32,18 +32,14 @@ public class Principal {
 			e1.printStackTrace();
 		} catch (MalformedURLException e1) {
 			// TODO Auto-generated catch block
-			System.out.println("Erro: URL mal formada:"+e1.getMessage());
+			System.out.println("Erro de URL mal formada:"+e1.getMessage());
 			e1.printStackTrace();
 		} catch (NotBoundException e1) {
 			// TODO Auto-generated catch block
-			System.out.println("Erro de conexão nao completada:"+e1.getMessage());
+			System.out.println("Erro de conexão não completada:"+e1.getMessage());
 			e1.printStackTrace();
 		}
-			
-		
-		
-		
-		
+	
 		
 	//	cli = new Client();
 		

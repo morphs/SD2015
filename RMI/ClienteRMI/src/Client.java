@@ -48,7 +48,7 @@ public class Client extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					System.out.println("client.....");
+					System.out.println("Client.....");
 					Client frame = new Client();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -65,7 +65,7 @@ public class Client extends JFrame {
 		
 		try {
 			controller = (ServerInterface) Naming.lookup("rmi://localhost/Servidor/Controller/");
-			System.out.println("binder encontrado");
+			System.out.println("Binder encontrado!");
 			
 		} catch (MalformedURLException e1) {
 		System.out.println("Erro de url mal formada:"+e1.getMessage());
@@ -112,7 +112,7 @@ public class Client extends JFrame {
 					    model.addElement(file);				
 					    listaArquivos.updateUI();}
 				     else{
-				    	 JOptionPane.showMessageDialog(null,"Falha ao obter a lista de arquivos","Mensagem de erro",JOptionPane.ERROR_MESSAGE);
+				    	 JOptionPane.showMessageDialog(null,"Falha ao obter a lista de arquivos!","Mensagem de erro:",JOptionPane.ERROR_MESSAGE);
 				     }
 						
 				} catch (RemoteException e) {
@@ -129,21 +129,21 @@ public class Client extends JFrame {
 		btnNew = new JButton("New");
 		btnNew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String name = JOptionPane.showInputDialog("Entre com o nome do arquivo");
+				String name = JOptionPane.showInputDialog("Entre com o nome do arquivo:");
 				if(name != null){
 					if(name.length() != 0){
 						try {
 							int result = controller.newFile(name);
 							if (result==1)
-							    JOptionPane.showMessageDialog(null, "Arquivo criado com sucesso");
+							    JOptionPane.showMessageDialog(null, "Arquivo criado com sucesso!");
 							else
-								JOptionPane.showMessageDialog(null, "Falha ao criar o arquivo");
+								JOptionPane.showMessageDialog(null, "Falha ao criar o arquivo!");
 						} catch (RemoteException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 					}else{
-						JOptionPane.showMessageDialog(null,"Nome inválido","Mensagem de erro",JOptionPane.ERROR_MESSAGE);
+						JOptionPane.showMessageDialog(null,"Nome de arquivo inválido!","Mensagem de erro:",JOptionPane.ERROR_MESSAGE);
 					}
 				}
 
@@ -162,7 +162,7 @@ public class Client extends JFrame {
 					if (result!=null)
 						caixaTexto.setText(result);					
 				} catch (RemoteException e1) {
-					System.out.println("falha ao ler o arquivo");
+					System.out.println("Falha ao ler arquivo!");
 					e1.printStackTrace();
 				}
 			}
@@ -178,12 +178,12 @@ public class Client extends JFrame {
 				try {
 					int result = controller.writeFile(filename, content);
 					if (result==1)
-					    JOptionPane.showMessageDialog(null, "Arquivo escrito com sucesso");
+					    JOptionPane.showMessageDialog(null, "Arquivo escrito com sucesso!");
 					else
-						JOptionPane.showMessageDialog(null, "Falha ao escrever no arquivo");
+						JOptionPane.showMessageDialog(null, "Falha ao escrever no arquivo!");
 					
 				} catch (RemoteException e1) {
-					System.out.println("falha ao escrever arquivo");
+					System.out.println("Falha ao escrever arquivo!");
 					e1.printStackTrace();
 				}
 			}
@@ -200,11 +200,11 @@ public class Client extends JFrame {
 		btnList.setBounds(571, 12, 117, 25);
 		contentPane.add(btnList);
 		
-		lblArquivoAtual = new JLabel("Arquivo Atual:");
+		lblArquivoAtual = new JLabel("Arquivo atual:");
 		lblArquivoAtual.setBounds(12, 282, 352, 15);
 		contentPane.add(lblArquivoAtual);
 
-		lblArquivosDisponvel = new JLabel("Arquivos Disponíveis:");
+		lblArquivosDisponvel = new JLabel("Arquivos disponíveis:");
 		lblArquivosDisponvel.setBounds(12, 12, 188, 15);
 		contentPane.add(lblArquivosDisponvel);
 		// swing

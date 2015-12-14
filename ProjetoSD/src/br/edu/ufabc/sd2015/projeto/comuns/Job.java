@@ -4,10 +4,10 @@ import java.io.File;
 public class Job {
 
 	//Vars
+	private  String name;
 	private  File executable;
 	private   boolean hasFile;
-	private   String command;
-	private   String args;
+	private   String[] command;
 	
 	private   long time;
 	private   int group;
@@ -19,30 +19,34 @@ public class Job {
 
 
 	//Constructors
-	public Job(File file, String args, int priority, int time, int group, int groupOrder){
-		hasFile = true;
-		executable = file;
-		this.args = args;
-		this.priority = priority;
-		this.setTime(time);
-		this.group = group;
-		this.groupOrder = groupOrder;
-	}
 
-	public Job(File file, String cmd, String args, int priority, int time, int group, int groupOrder){
+	public Job(String name, File file, String[] cmd, int priority, long time, int group, int groupOrder){
 		hasFile = true;
+		this.name = name;
 		executable = file;
 		this.command = cmd;
-		this.args = args;
 		this.priority = priority;
 		this.setTime(time);
 		this.group = group;
 		this.groupOrder = groupOrder;
 	}
+	public Job(String name, File file, String[] cmd, int priority, long time, int group, int groupOrder,String output, File outputfile){
+		hasFile = true;
+		this.name = name;
+		executable = file;
+		this.command = cmd;
+		this.priority = priority;
+		this.setTime(time);
+		this.group = group;
+		this.groupOrder = groupOrder;
+		this.output = output;
+		this.outputFile = outputfile;
+	}
 
-	public Job(String command, String args, int priority, int time, int group, int groupOrder){
+
+	public Job(String name, String[] command, int priority, long time, int group, int groupOrder){
 		this.command = command;
-		this.args = args;
+		this.name = name;
 		this.priority = priority;
 		this.setTime(time);
 		this.group = group;
@@ -79,21 +83,14 @@ public class Job {
 		this.hasFile = hasFile;
 	}
 
-	public String getCommand() {
+	public String[] getCommand() {
 		return command;
 	}
 
-	public void setCommand(String command) {
+	public void setCommand(String[] command) {
 		this.command = command;
 	}
 
-	public String getArgs() {
-		return args;
-	}
-
-	public void setArgs(String args) {
-		this.args = args;
-	}
 
 	public int getGroup() {
 		return group;
@@ -133,6 +130,14 @@ public class Job {
 
 	public void setOutputFile(File outputFile) {
 		this.outputFile = outputFile;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	//End Gets e Sets

@@ -16,6 +16,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
+import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
 
 public class Arrumar_Servidor extends UnicastRemoteObject implements ServerInterface{
 		
@@ -114,15 +115,15 @@ public class Arrumar_Servidor extends UnicastRemoteObject implements ServerInter
 					Object obj = parser.parse(new FileReader(filename));
 					JSONObject jsonObject = (JSONObject) obj;
 					String name = (String) jsonObject.get("name");
-					String[] command = (String[]) jsonObject.get("command");
-					long time = (long) jsonObject.get("time");
+					String command = (String) jsonObject.get("command");
+					int time = (int) jsonObject.get("time");
 					File executable = (File) jsonObject.get("executable");
 					int priority = (int) jsonObject.get("priority");
 					int group = (int) jsonObject.get("group");
 					int grouporder = (int) jsonObject.get("grouporder");
 					String output = (String) jsonObject.get("output");
 					File outputfile = (File) jsonObject.get("outputFile");
-					jo = new Job(name,executable,command,priority,time,group,grouporder,output,outputfile);
+					jo = new Job(executable,command,priority,time,group,grouporder,output,outputfile);
 					
 					return jo;					
 				} catch (IOException e) {					

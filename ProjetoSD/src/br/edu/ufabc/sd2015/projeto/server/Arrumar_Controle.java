@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
+import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
 
 
 public class Arrumar_Controle extends UnicastRemoteObject implements ServerInterface{

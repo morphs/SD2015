@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.MaskFormatter;
 import javax.swing.JLabel;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -30,11 +31,29 @@ public class GUI_NewJob extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtComandos;
-	private JTextField txtPrioridade;
-	private JTextField txtGrupo;
-	private JTextField txtPrioridadeGrupo;
-	private JTextField txtTempoLimite;
+	private JFormattedTextField txtPrioridade;
+	private JFormattedTextField txtGrupo;
+	private JFormattedTextField txtPrioridadeGrupo;
+	private JFormattedTextField txtTempoLimite;
+	private JFormattedTextField ftxtArquivo;
+	//private File selectedFile;
 
+	//Vars
+	private  String name;
+	private  File executable;
+	private   boolean hasFile;
+	private   String cmd;	
+	private   int time;
+	private   int group;
+	private   int groupOrder;
+	private   int priority;
+	private   String output;
+	private   File outputFile;
+		//End Vars
+	
+	
+	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -42,7 +61,7 @@ public class GUI_NewJob extends JDialog {
 		try {
 			GUI_NewJob dialog = new GUI_NewJob();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);			
+			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,6 +71,10 @@ public class GUI_NewJob extends JDialog {
 	 * Create the dialog.
 	 */
 	public GUI_NewJob() {
+		
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -80,30 +103,29 @@ public class GUI_NewJob extends JDialog {
 			JLabel lblComandos = new JLabel("Comandos");
 			lblComandos.setHorizontalAlignment(SwingConstants.CENTER);
 			contentPanel.add(lblComandos, "2, 2, right, default");
-			
 		}
 		{
 			txtComandos = new JTextField();
 			contentPanel.add(txtComandos, "4, 2, fill, default");
 			txtComandos.setColumns(10);
-				
 		}
 		{
 			JLabel lblPrioridade = new JLabel("Prioridade");
 			contentPanel.add(lblPrioridade, "2, 4, right, default");
 		}
 		{
-			txtPrioridade = new JTextField();
+			txtPrioridade = new JFormattedTextField(createFormatter("###"));
+			txtPrioridade.setText("000");
 			contentPanel.add(txtPrioridade, "4, 4, fill, default");
 			txtPrioridade.setColumns(10);
-			
 		}
 		{
 			JLabel lblGrupo = new JLabel("Grupo");
 			contentPanel.add(lblGrupo, "2, 6, right, default");
 		}
 		{
-			txtGrupo = new JTextField();
+			txtGrupo = new JFormattedTextField(createFormatter("###"));
+			txtGrupo.setText("000");
 			contentPanel.add(txtGrupo, "4, 6, fill, default");
 			txtGrupo.setColumns(10);
 		}
@@ -112,7 +134,8 @@ public class GUI_NewJob extends JDialog {
 			contentPanel.add(lblPG, "2, 8, right, default");
 		}
 		{
-			txtPrioridadeGrupo = new JTextField();
+			txtPrioridadeGrupo = new JFormattedTextField(createFormatter("###"));
+			txtPrioridadeGrupo.setText("000");
 			contentPanel.add(txtPrioridadeGrupo, "4, 8, fill, default");
 			txtPrioridadeGrupo.setColumns(10);
 		}
@@ -121,7 +144,8 @@ public class GUI_NewJob extends JDialog {
 			contentPanel.add(lblTempoLimite, "2, 10, right, default");
 		}
 		{
-			txtTempoLimite = new JTextField();
+			txtTempoLimite = new JFormattedTextField(createFormatter("######"));
+			txtTempoLimite.setText("000");
 			contentPanel.add(txtTempoLimite, "4, 10, fill, default");
 			txtTempoLimite.setColumns(10);
 		}
@@ -130,59 +154,82 @@ public class GUI_NewJob extends JDialog {
 			contentPanel.add(lblArquivo, "2, 12, right, default");
 		}
 		{
-			JFormattedTextField ftxtArquivo = new JFormattedTextField();
+			ftxtArquivo = new JFormattedTextField();
 			ftxtArquivo.setEditable(false);
 			contentPanel.add(ftxtArquivo, "4, 12, fill, default");
 		}
+		
+		
+		
 		{
-			JButton btnSelecionar = new JButton("Selecionar");
-			btnSelecionar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-				  JFileChooser fileChooser = new JFileChooser();
-				  int returnValue = fileChooser.showOpenDialog(null);
-				  if (returnValue == JFileChooser.APPROVE_OPTION) {
-				  File selectedFile = fileChooser.getSelectedFile();
-				  System.out.println(selectedFile.getName());}		
-			}
-		});
-			contentPanel.add(btnSelecionar, "4, 14");
-		}
-		{
-
-			
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");		
-				okButton.setActionCommand("OK"); 
-				okButton.addActionListener(new ActionListener(){
-					 public void actionPerformed(ActionEvent e) {
-
-					
-				  }
-			    });
-				
-	     		buttonPane.add(okButton);
+				JButton okButton = new JButton("OK");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						createNewJob();
+					}
+				});
+				okButton.setActionCommand("OK");
+				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Clear");
-				cancelButton.setActionCommand("Clear");
+				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
-				cancelButton.addActionListener(new ActionListener() {
-				    public void actionPerformed(ActionEvent e)
-				    {
-				    	 txtComandos.setText("");
-				    	 txtPrioridade.setText("");
-				    	 txtGrupo.setText("");
-				    	 txtPrioridadeGrupo.setText("");
-				    	 txtTempoLimite.setText("");
-				    }
-				});
 			}
 		}
-
+		//file
+		{
+			JButton btnSelecionar = new JButton("Selecionar");
+			btnSelecionar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					int result = fileChooser.showOpenDialog(getParent());
+					if (result == JFileChooser.APPROVE_OPTION) {						
+						executable = fileChooser.getSelectedFile();
+						System.out.println(executable.getAbsolutePath());
+						ftxtArquivo.setText(executable.getName());
+						hasFile = true;
+						System.out.println(hasFile);
+					}
+				}
+			});
+			contentPanel.add(btnSelecionar, "4, 14");
+		}
+		//file
 	}
+	
+	public void createNewJob(){
+		Job job;
+		cmd = txtComandos.getText().toString();
+		priority = Integer.parseInt(txtPrioridade.getText().trim().toString());
+		time = Integer.parseInt(txtTempoLimite.getText().trim().toString());
+		group = Integer.parseInt(txtGrupo.getText().trim().toString());
+		groupOrder = Integer.parseInt(txtPrioridadeGrupo.getText().trim().toString());
+		
+		if(hasFile)
+			job = new Job(executable, cmd, priority, time, group, groupOrder);
+		else
+		job = new Job(cmd, priority, time, group, groupOrder);
+		
+		System.out.println(job);
+		
+	}
+
+	protected MaskFormatter createFormatter(String s) {
+	    MaskFormatter formatter = null;
+	    try {
+	        formatter = new MaskFormatter(s);
+	    } catch (java.text.ParseException exc) {
+	        System.err.println("formatter is bad: " + exc.getMessage());
+	        System.exit(-1);
+	    }
+	    return formatter;
+	}
+
+	
 	
 }

@@ -29,7 +29,7 @@ public class CJob {
         BufferedReader br = new BufferedReader(isr);
         String output = "";
         String line;
-        System.out.printf("Output of running %s is:\n",j.getCommand()[0]);
+        System.out.printf("Output of running %s is:\n",j.getCommand());
         while ((line = br.readLine()) != null) {
         	output += line;
         }

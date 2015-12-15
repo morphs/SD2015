@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
 import br.edu.ufabc.sd2015.projeto.server.Arrumar_Controle;
-import br.edu.ufabc.sd2015.projeto.server.ServerInterface;
+import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
 import br.edu.ufabc.sd2015.projeto.server.Arrumar_Servidor;
 
 public class ServerMain {

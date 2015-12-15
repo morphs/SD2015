@@ -7,9 +7,9 @@ public class Job {
 	private  String name;
 	private  File executable;
 	private   boolean hasFile;
-	private   String[] command;
+	private   String command;
 	
-	private   long time;
+	private   int time;
 	private   int group;
 	private   int groupOrder;
 	private   int priority;
@@ -20,20 +20,20 @@ public class Job {
 
 	//Constructors
 
-	public Job(String name, File file, String[] cmd, int priority, long time, int group, int groupOrder){
+	public Job(File executable, String cmd, int priority, int time, int group, int groupOrder){
 		hasFile = true;
-		this.name = name;
-		executable = file;
+	//	this.name = name;
+		this.executable = executable;
 		this.command = cmd;
 		this.priority = priority;
 		this.setTime(time);
 		this.group = group;
 		this.groupOrder = groupOrder;
 	}
-	public Job(String name, File file, String[] cmd, int priority, long time, int group, int groupOrder,String output, File outputfile){
+	public Job(File executable, String cmd, int priority, int time, int group, int groupOrder,String output, File outputfile){
 		hasFile = true;
-		this.name = name;
-		executable = file;
+	//	this.name = name;
+		this.executable = executable;
 		this.command = cmd;
 		this.priority = priority;
 		this.setTime(time);
@@ -44,9 +44,9 @@ public class Job {
 	}
 
 
-	public Job(String name, String[] command, int priority, long time, int group, int groupOrder){
-		this.command = command;
-		this.name = name;
+	public Job(String cmd, int priority, int time, int group, int groupOrder){
+		this.command = cmd;
+		//this.name = name;
 		this.priority = priority;
 		this.setTime(time);
 		this.group = group;
@@ -83,11 +83,11 @@ public class Job {
 		this.hasFile = hasFile;
 	}
 
-	public String[] getCommand() {
+	public String getCommand() {
 		return command;
 	}
 
-	public void setCommand(String[] command) {
+	public void setCommand(String command) {
 		this.command = command;
 	}
 
@@ -120,7 +120,7 @@ public class Job {
 		return time;
 	}
 
-	public void setTime(long time) {
+	public void setTime(int time) {
 		this.time = time;
 	}
 
@@ -138,6 +138,15 @@ public class Job {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	@Override
+	public String toString() {
+		return "Job [" + (name != null ? "name=" + name + ", " : "")
+				+ (executable != null ? "executable=" + executable.getName() + ", " : "") + "hasFile=" + hasFile + ", "
+				+ (command != null ? "command=" + command + ", " : "") + "time=" + time + ", group=" + group
+				+ ", groupOrder=" + groupOrder + ", priority=" + priority + ", "
+				+ (output != null ? "output=" + output + ", " : "")
+				+ (outputFile != null ? "outputFile=" + outputFile : "") + "]";
 	}
 
 	//End Gets e Sets

@@ -10,6 +10,8 @@ import br.edu.ufabc.sd2015.projeto.comuns.Job;
 public class CJob {
 	
 	public Job runCmd(Job j){
+		
+		
 		try{
 		//process construction
 		ProcessBuilder procbuilder = new ProcessBuilder( j.getCommand() );

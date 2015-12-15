@@ -216,6 +216,7 @@ public class GUI_NewJob extends JDialog {
 		job = new Job(cmd, priority, time, group, groupOrder);
 		
 		System.out.println(job);
+		Principal.addJobtoList(job);
 		
 	}
 

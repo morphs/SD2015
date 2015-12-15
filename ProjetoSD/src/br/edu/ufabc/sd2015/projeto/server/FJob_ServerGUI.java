@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
@@ -57,6 +59,9 @@ public class FJob_ServerGUI extends JFrame {
 		JButton btnNewJob = new JButton("New job");
 		btnNewJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				GUI_NewJob dialog = new GUI_NewJob();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
 			}
 		});
 		

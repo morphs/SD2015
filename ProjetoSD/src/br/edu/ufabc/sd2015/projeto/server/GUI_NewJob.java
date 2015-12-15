@@ -4,17 +4,22 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
+
+import br.edu.ufabc.sd2015.projeto.comuns.Job;
+
 import com.jgoodies.forms.layout.FormSpecs;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JFormattedTextField;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.awt.event.ActionEvent;
 
 public class GUI_NewJob extends JDialog {
@@ -37,7 +42,7 @@ public class GUI_NewJob extends JDialog {
 		try {
 			GUI_NewJob dialog = new GUI_NewJob();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
+			dialog.setVisible(true);			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -75,11 +80,13 @@ public class GUI_NewJob extends JDialog {
 			JLabel lblComandos = new JLabel("Comandos");
 			lblComandos.setHorizontalAlignment(SwingConstants.CENTER);
 			contentPanel.add(lblComandos, "2, 2, right, default");
+			
 		}
 		{
 			txtComandos = new JTextField();
 			contentPanel.add(txtComandos, "4, 2, fill, default");
 			txtComandos.setColumns(10);
+				
 		}
 		{
 			JLabel lblPrioridade = new JLabel("Prioridade");
@@ -89,6 +96,7 @@ public class GUI_NewJob extends JDialog {
 			txtPrioridade = new JTextField();
 			contentPanel.add(txtPrioridade, "4, 4, fill, default");
 			txtPrioridade.setColumns(10);
+			
 		}
 		{
 			JLabel lblGrupo = new JLabel("Grupo");
@@ -130,26 +138,51 @@ public class GUI_NewJob extends JDialog {
 			JButton btnSelecionar = new JButton("Selecionar");
 			btnSelecionar.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-				}
-			});
+				  JFileChooser fileChooser = new JFileChooser();
+				  int returnValue = fileChooser.showOpenDialog(null);
+				  if (returnValue == JFileChooser.APPROVE_OPTION) {
+				  File selectedFile = fileChooser.getSelectedFile();
+				  System.out.println(selectedFile.getName());}		
+			}
+		});
 			contentPanel.add(btnSelecionar, "4, 14");
 		}
 		{
+
+			
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
+				JButton okButton = new JButton("OK");		
+				okButton.setActionCommand("OK"); 
+				okButton.addActionListener(new ActionListener(){
+					 public void actionPerformed(ActionEvent e) {
+
+					
+				  }
+			    });
+				
+	     		buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
+				JButton cancelButton = new JButton("Clear");
+				cancelButton.setActionCommand("Clear");
 				buttonPane.add(cancelButton);
+				cancelButton.addActionListener(new ActionListener() {
+				    public void actionPerformed(ActionEvent e)
+				    {
+				    	 txtComandos.setText("");
+				    	 txtPrioridade.setText("");
+				    	 txtGrupo.setText("");
+				    	 txtPrioridadeGrupo.setText("");
+				    	 txtTempoLimite.setText("");
+				    }
+				});
 			}
 		}
-	}
 
+	}
+	
 }

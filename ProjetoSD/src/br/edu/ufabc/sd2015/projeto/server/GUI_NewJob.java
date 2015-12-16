@@ -100,7 +100,7 @@ public class GUI_NewJob extends JDialog {
 		}
 		{
 			txtPrioridade = new JFormattedTextField(createFormatter("###"));
-			txtPrioridade.setText("000");
+			txtPrioridade.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			contentPanel.add(txtPrioridade, "4, 4, fill, default");
 			txtPrioridade.setColumns(10);
 		}
@@ -110,7 +110,7 @@ public class GUI_NewJob extends JDialog {
 		}
 		{
 			txtGrupo = new JFormattedTextField(createFormatter("###"));
-			txtGrupo.setText("000");
+			txtGrupo.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			contentPanel.add(txtGrupo, "4, 6, fill, default");
 			txtGrupo.setColumns(10);
 		}
@@ -120,7 +120,7 @@ public class GUI_NewJob extends JDialog {
 		}
 		{
 			txtPrioridadeGrupo = new JFormattedTextField(createFormatter("###"));
-			txtPrioridadeGrupo.setText("000");
+			txtPrioridadeGrupo.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			contentPanel.add(txtPrioridadeGrupo, "4, 8, fill, default");
 			txtPrioridadeGrupo.setColumns(10);
 		}
@@ -130,7 +130,7 @@ public class GUI_NewJob extends JDialog {
 		}
 		{
 			txtTempoLimite = new JFormattedTextField(createFormatter("######"));
-			txtTempoLimite.setText("000");
+			txtTempoLimite.setFocusLostBehavior(JFormattedTextField.PERSIST);
 			contentPanel.add(txtTempoLimite, "4, 10, fill, default");
 			txtTempoLimite.setColumns(10);
 		}
@@ -163,6 +163,11 @@ public class GUI_NewJob extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
@@ -195,14 +200,16 @@ public class GUI_NewJob extends JDialog {
 		group = Integer.parseInt(txtGrupo.getText().trim().toString());
 		groupOrder = Integer.parseInt(txtPrioridadeGrupo.getText().trim().toString());
 		
-		if(hasFile)
-			job = new Job(executable, cmd, priority, time, group, groupOrder);
-		else
-		job = new Job(cmd, priority, time, group, groupOrder);
-		
+		if(hasFile){
+			job = new Job(executable, cmd.split(" "), priority, time, group, groupOrder);
+		}else{
+	
+		job = new Job(cmd.split(" "), priority, time, group, groupOrder);
+		}
 		System.out.println(job);
 		try {
 			sv1.addJob(job);
+			dispose();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

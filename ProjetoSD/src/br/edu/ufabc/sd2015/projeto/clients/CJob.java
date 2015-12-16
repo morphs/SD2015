@@ -40,7 +40,7 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	private static final long serialVersionUID = 1L;
 
 	public Job runJob(Job j){
-		
+		System.out.println("Entrou aqui");
 		
 		try{
 		//process construction
@@ -100,9 +100,9 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	}
 
 	@Override
-	public String[] getClientList() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	public String getClientName() throws RemoteException {
+		return this.clId;
 	}
-		
+	
+	
 }

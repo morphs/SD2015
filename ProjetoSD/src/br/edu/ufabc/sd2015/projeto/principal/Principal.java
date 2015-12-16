@@ -18,16 +18,16 @@ public class Principal{
 	public static void main(String[] args) {
 		int clientsnumber = 3;
 		int serversnumber = 1;
-			
+		Servidor[] svs = new Servidor[serversnumber];
+		
 		try {
 			//Faz a função do rmiregistry, na porta default 1099
 			LocateRegistry.createRegistry(1099);
 			//Cria os  servidores
 			for (int i = 0; i < serversnumber; i++) {
-				Servidor sv =new Servidor("Server"+i);
-				Naming.rebind("rmi://localhost/Servers/Server"+i+"/", (ServerInterface) sv);
+				svs[i] = new Servidor("Server"+i);
+				Naming.rebind("rmi://localhost/Servers/Server"+i+"/", (ServerInterface) svs[i]);
 				System.out.println("Rodando sv"+i+" ...");
-				new Thread(() -> new FJob_ServerGUI(sv)).start();
 			}
 	
 			//Cria os clientes
@@ -41,6 +41,12 @@ public class Principal{
 			ServerInterface controller  = new Controller(serversnumber,clientsnumber);
 			Naming.rebind("rmi://localhost/Servidor/Controller/", controller);
 			System.out.println("Rodando controle...");
+			
+			//Executa a interface do servidor
+			for (int i = 0; i < serversnumber; i++) {
+				Servidor sv = svs[i];
+				new Thread(() -> new FJob_ServerGUI(sv,(Controller)controller)).start();
+			}
 			
 			
 		} catch (RemoteException e1) {

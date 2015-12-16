@@ -5,10 +5,10 @@ import java.rmi.RemoteException;
 
 public interface ClientInterface extends Remote {
 	
+	
 	public Job runJob(Job j) throws RemoteException;
 	
-	public String[] getClientList() throws RemoteException;
-	
+	public String getClientName() throws RemoteException;
 	
 	public void sayHi(String RMIaddress) throws RemoteException;
 	

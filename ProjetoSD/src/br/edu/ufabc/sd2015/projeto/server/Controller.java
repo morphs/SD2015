@@ -9,6 +9,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import br.edu.ufabc.sd2015.projeto.clients.CJob;
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
 import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
@@ -26,11 +27,11 @@ public class Controller extends UnicastRemoteObject implements ServerInterface{
 	// construtor
 	public Controller(int serversNumber,int clientNumber) throws RemoteException, MalformedURLException, NotBoundException{
 		for (int i = 0; i < serversNumber; i++) {
-			System.out.println("Iniciando controller...");
+			System.out.println("Controller: Adicionando o servidor "+i);
 			servers.add((ServerInterface) Naming.lookup("rmi://localhost/Servers/Server"+i+"/"));
 		}
-		for (int i = 0; i < serversNumber; i++) {
-			System.out.println("Iniciando controller...");
+		for (int i = 0; i < clientNumber; i++) {
+			System.out.println("Controller: Adicionando o client "+i);
 			clients.add((ClientInterface) Naming.lookup("rmi://localhost/Clients/Client"+i+"/"));
 		}	
 	}
@@ -39,13 +40,16 @@ public class Controller extends UnicastRemoteObject implements ServerInterface{
 	//Pega a lista de Clientes
 	@SuppressWarnings("unused")
 	public String[] getClientList() throws RemoteException {
-		for (int i = 0; i < servers.size()-1;i++) {
-			if (!(Arrays.deepEquals(clients.get(i).getClientList(), clients.get(i+1).getClientList())))
-			   return null;
-			else
-				return clients.get(0).getClientList();				   				   			
+		String[] retorno = new String [clients.size()];
+		for (int i = 0; i < clients.size()-1;i++) {
+			retorno[i] = clients.get(i).getClientName();				   				   			
 		}
-		return null;
+		if(clients.size()>=1){
+			return retorno;
+		}else{
+			return null;
+		}
+		
 	}
 	//Fim lista de servidores
 	
@@ -58,6 +62,7 @@ public class Controller extends UnicastRemoteObject implements ServerInterface{
 	@Override
 	public int sendJob(Job j) throws RemoteException {
 		// TODO Auto-generated method stub
+		clients.get(0).runJob(j);
 		return 0;
 	}
 

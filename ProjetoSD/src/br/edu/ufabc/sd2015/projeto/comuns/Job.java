@@ -1,18 +1,22 @@
 package br.edu.ufabc.sd2015.projeto.comuns;
 import java.io.File;
 
-public class Job {
+public class Job implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//Vars
-	private  int id;
+	private  long id;
 	private  File executable;
 	private   boolean hasFile;
-	private   String command;
+	private   String[] command;
 	
-	private   int time;
-	private   int group;
-	private   int groupOrder;
-	private   int priority;
+	private   long time;
+	private   long group;
+	private   long groupOrder;
+	private   long priority;
 	private   String output;
 	private   File outputFile;
 	//End Vars
@@ -20,7 +24,7 @@ public class Job {
 
 	//Constructors
 
-	public Job(File executable, int id, String cmd, int priority, int time, int group, int groupOrder){
+	public Job(File executable, long id, String[] cmd, long priority, long time, long group, long groupOrder){
 		hasFile = true;
 		this.setId(id);
 		this.executable = executable;
@@ -30,9 +34,9 @@ public class Job {
 		this.group = group;
 		this.groupOrder = groupOrder;
 	}
-	public Job(File executable,String cmd, int priority, int time, int group, int groupOrder){
+	public Job(File executable,String[] cmd, long priority, long time, long group, long groupOrder){
 		hasFile = true;
-		this.setId((int)Math.round(Math.random()*10000));
+		this.id = (long) Math.round(Math.random()*10000);
 		this.executable = executable;
 		this.command = cmd;
 		this.priority = priority;
@@ -40,7 +44,7 @@ public class Job {
 		this.group = group;
 		this.groupOrder = groupOrder;
 	}
-	public Job(File executable, int id, String cmd, int priority, int time, int group, int groupOrder,String output, File outputfile){
+	public Job(File executable, long id, String[] cmd, long priority, long time, long group, long groupOrder,String output, File outputfile){
 		hasFile = true;
 		this.setId(id);
 		this.executable = executable;
@@ -54,8 +58,9 @@ public class Job {
 	}
 
 
-	public Job(String cmd, int id, int priority, int time, int group, int groupOrder){
+	public Job(String[] cmd, long id, long priority, long time, long group, long groupOrder){
 		this.command = cmd;
+		this.id = id;
 		this.priority = priority;
 		this.setTime(time);
 		this.group = group;
@@ -64,9 +69,9 @@ public class Job {
 
 
 	}
-	public Job(String cmd, int priority, int time, int group, int groupOrder){
+	public Job(String[] cmd, long priority, long time, long group, long groupOrder){
 		this.command = cmd;
-		this.setId((int)Math.round(Math.random()*10000));
+		this.id = (long) Math.round(Math.random()*10000);
 		this.priority = priority;
 		this.setTime(time);
 		this.group = group;
@@ -103,36 +108,36 @@ public class Job {
 		this.hasFile = hasFile;
 	}
 
-	public String getCommand() {
+	public String[] getCommand() {
 		return command;
 	}
 
-	public void setCommand(String command) {
+	public void setCommand(String[] command) {
 		this.command = command;
 	}
 
 
-	public int getGroup() {
+	public long getGroup() {
 		return group;
 	}
 
-	public void setGroup(int group) {
+	public void setGroup(long group) {
 		this.group = group;
 	}
 
-	public int getGroupOrder() {
+	public long getGroupOrder() {
 		return groupOrder;
 	}
 
-	public void setGroupOrder(int groupOrder) {
+	public void setGroupOrder(long groupOrder) {
 		this.groupOrder = groupOrder;
 	}
 
-	public int getPriority() {
+	public long getPriority() {
 		return priority;
 	}
 
-	public void setPriority(int priority) {
+	public void setPriority(long priority) {
 		this.priority = priority;
 	}
 
@@ -140,7 +145,7 @@ public class Job {
 		return time;
 	}
 
-	public void setTime(int time) {
+	public void setTime(long time) {
 		this.time = time;
 	}
 
@@ -162,10 +167,10 @@ public class Job {
 				+ (output != null ? "output=" + output + ", " : "")
 				+ (outputFile != null ? "outputFile=" + outputFile : "") + "]";
 	}
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

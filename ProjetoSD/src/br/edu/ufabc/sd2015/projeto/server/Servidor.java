@@ -110,15 +110,16 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 		JSONParser parser = new JSONParser();
 
 				try {
-					Object obj = parser.parse(new FileReader(filename));
+					System.out.println("Tentando ler:"+filename);
+					Object obj = parser.parse(new FileReader(diretorio+filename));
 					JSONObject jsonObject = (JSONObject) obj;
-					int id = (int) jsonObject.get("id");
-					String command = (String) jsonObject.get("command");
-					int time = (int) jsonObject.get("time");
+					long id = (long) jsonObject.get("id");
+					String[] command = ((String) jsonObject.get("command")).split(" ");
+					long time = (long) jsonObject.get("time");
 					File executable = (File) jsonObject.get("executable");
-					int priority = (int) jsonObject.get("priority");
-					int group = (int) jsonObject.get("group");
-					int grouporder = (int) jsonObject.get("grouporder");
+					long priority = (long) jsonObject.get("priority");
+					long group = (long) jsonObject.get("group");
+					long grouporder = (long) jsonObject.get("grouporder");
 					String output = (String) jsonObject.get("output");
 					File outputfile = (File) jsonObject.get("outputFile");
 					jo = new Job(executable,id,command,priority,time,group,grouporder,output,outputfile);

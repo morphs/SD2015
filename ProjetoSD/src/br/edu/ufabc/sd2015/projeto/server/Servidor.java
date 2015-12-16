@@ -105,6 +105,15 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 		return ServerInterface.OK;
 	}
 	
+	public boolean RemoveJob(String jobname){
+		String id = this.getSvId();
+	  	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP;
+		String remove = diretorio+SEP+"Server0"+SEP+jobname;
+		File f = new File(remove);		
+		return f.delete();		
+		
+	}
+	
 	public Job getLog(String filename) throws RemoteException {
 		Job jo;
 		JSONParser parser = new JSONParser();

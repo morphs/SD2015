@@ -170,12 +170,27 @@ public class FJob_ServerGUI extends JFrame implements Runnable{
 		gbc_btnSendJob.gridy = 6;
 		contentPane.add(btnSendJob, gbc_btnSendJob);
 		
+		
 		JButton btnRemoveJob = new JButton("Remove Job");
+		btnRemoveJob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {		
+				try {
+				String selected = lJobs.getSelectedValue();
+			      if(sv.RemoveJob(selected)){
+			    	  JOptionPane.showMessageDialog(null,"Job "+selected+" removido com sucesso!");
+			      }
+				}catch (Exception e1){				
+					e1.printStackTrace();
+				}
+			}
+		});
 		GridBagConstraints gbc_btnRemoveJob = new GridBagConstraints();
 		gbc_btnRemoveJob.insets = new Insets(0, 0, 5, 5);
 		gbc_btnRemoveJob.gridx = 0;
 		gbc_btnRemoveJob.gridy = 7;
 		contentPane.add(btnRemoveJob, gbc_btnRemoveJob);
+	
+		
 		GridBagConstraints gbc_btnNewJob = new GridBagConstraints();
 		gbc_btnNewJob.insets = new Insets(0, 0, 0, 5);
 		gbc_btnNewJob.gridx = 0;

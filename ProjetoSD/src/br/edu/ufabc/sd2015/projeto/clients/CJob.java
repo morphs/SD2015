@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Arrays;
+import java.util.List;
 
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
@@ -44,7 +46,12 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 		
 		try{
 		//process construction
-		ProcessBuilder procbuilder = new ProcessBuilder( j.getCommand() );
+			
+		List<String> cmds = Arrays.asList(j.getCommand());
+
+		ProcessBuilder procbuilder = new ProcessBuilder("/bin/bash");
+		procbuilder.command(cmds);
+		System.out.println("cooooo::: "+procbuilder.command().toString());
 		if(j.isHasFile()){
 			procbuilder.directory(j.getExecutable());
 		}else{

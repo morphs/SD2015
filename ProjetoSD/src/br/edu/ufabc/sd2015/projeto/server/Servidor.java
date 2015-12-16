@@ -75,10 +75,16 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 		File newFile = new File(name);
 		if(!newFile.exists()){
 			try {
+				StringBuilder sb = new StringBuilder();
+				for (String s: j.getCommand()){
+					System.out.println(s);
+					sb.append(s+" ");
+				}				
+				
 				//Escreve json
 				JSONObject obj = new JSONObject();
 				obj.put("id", j.getId());
-				obj.put("command", j.getCommand().toString());
+				obj.put("command", sb.toString());
 				obj.put("executable", j.getExecutable());
 				obj.put("time",j.getTime());
 				obj.put("priority",j.getPriority());
@@ -124,6 +130,11 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 					JSONObject jsonObject = (JSONObject) obj;
 					long id = (long) jsonObject.get("id");
 					String[] command = ((String) jsonObject.get("command")).split(" ");
+					
+					for (int i = 0; i < command.length; i++) {
+						System.out.println("parser::: " +command[i]);
+					}
+					
 					long time = (long) jsonObject.get("time");
 					File executable = (File) jsonObject.get("executable");
 					long priority = (long) jsonObject.get("priority");

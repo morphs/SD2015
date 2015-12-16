@@ -13,6 +13,7 @@ import java.util.List;
 
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
+import br.edu.ufabc.sd2015.projeto.comuns.KeyManager;
 
 public class CJob extends UnicastRemoteObject implements ClientInterface {
 	
@@ -28,6 +29,8 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	    	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP+id+SEP;
 			folder = new File(diretorio);
 			System.out.println("Criando diretório:" +folder);
+			KeyManager km = new KeyManager();
+			km.generateKey(folder);
 			if(!(folder.exists() && folder.isDirectory())){
 				folder.mkdirs();
 				System.out.println("Diretório criado "+folder);

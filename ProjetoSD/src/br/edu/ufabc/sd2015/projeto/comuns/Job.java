@@ -1,5 +1,6 @@
 package br.edu.ufabc.sd2015.projeto.comuns;
 import java.io.File;
+import java.util.Arrays;
 
 public class Job implements java.io.Serializable {
 
@@ -162,7 +163,7 @@ public class Job implements java.io.Serializable {
 	public String toString() {
 		return "Job [" + (id != 0 ? "id=" + id + ", " : "")
 				+ (executable != null ? "executable=" + executable.getName() + ", " : "") + "hasFile=" + hasFile + ", "
-				+ (command != null ? "command=" + command + ", " : "") + "time=" + time + ", group=" + group
+				+ (command != null ? "command=" + Arrays.toString(command) + ", " : "") + "time=" + time + ", group=" + group
 				+ ", groupOrder=" + groupOrder + ", priority=" + priority + ", "
 				+ (output != null ? "output=" + output + ", " : "")
 				+ (outputFile != null ? "outputFile=" + outputFile : "") + "]";

@@ -41,7 +41,7 @@ public class Controller extends UnicastRemoteObject implements ServerInterface{
 	@SuppressWarnings("unused")
 	public String[] getClientList() throws RemoteException {
 		String[] retorno = new String [clients.size()];
-		for (int i = 0; i < clients.size()-1;i++) {
+		for (int i = 0; i < clients.size();i++) {
 			retorno[i] = clients.get(i).getClientName();				   				   			
 		}
 		if(clients.size()>=1){

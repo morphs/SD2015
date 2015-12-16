@@ -22,14 +22,14 @@ public class KeyManager {
 	//End Vars
 	
 	
-	public static void generateKey() {
+	public static void generateKey(File folder) {
 	    try {
 	      final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
 	      keyGen.initialize(1024);
 	      final KeyPair key = keyGen.generateKeyPair();
 
-	      File privateKeyFile = new File(PRIVATE_KEY_FILE);
-	      File publicKeyFile = new File(PUBLIC_KEY_FILE);
+	      File privateKeyFile = new File(folder+System.getProperty("file.separator")+PRIVATE_KEY_FILE);
+	      File publicKeyFile = new File(folder+System.getProperty("file.separator")+PUBLIC_KEY_FILE);
 
 	      // Create files to store public and private key
 	      if (privateKeyFile.getParentFile() != null) {

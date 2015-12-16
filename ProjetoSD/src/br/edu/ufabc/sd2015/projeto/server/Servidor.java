@@ -13,6 +13,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
+import br.edu.ufabc.sd2015.projeto.comuns.KeyManager;
 import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
 
 public class Servidor extends UnicastRemoteObject implements ServerInterface{
@@ -37,6 +38,8 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
     	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP+id+SEP;
 		folder = new File(diretorio);
 		System.out.println("Criando diretório:" +folder);
+		KeyManager km = new KeyManager();
+		km.generateKey(folder);
 		if(!(folder.exists() && folder.isDirectory())){
 			folder.mkdirs();
 			System.out.println("Diretório criado "+folder);
@@ -62,7 +65,10 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 		File[] vFiles = folder.listFiles();
 		String[] fileList = new String[vFiles.length];
         for (int i = 0; i < vFiles.length; i++) {
-			fileList[i] = vFiles[i].getName();					
+        	if(vFiles[i].getName().startsWith("Job")){
+        		fileList[i] = vFiles[i].getName();		
+        	}
+						
 		}		
 		return fileList;
 	}

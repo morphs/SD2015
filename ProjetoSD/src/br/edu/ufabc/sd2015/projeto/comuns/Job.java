@@ -57,6 +57,19 @@ public class Job implements java.io.Serializable {
 		this.output = output;
 		this.outputFile = outputfile;
 	}
+	
+	public Job(String[] cmd, long priority, long time, long group, long groupOrder,String output, File outputfile){
+		hasFile = false;
+		this.setId(id);
+		this.executable = executable;
+		this.command = cmd;
+		this.priority = priority;
+		this.setTime(time);
+		this.group = group;
+		this.groupOrder = groupOrder;
+		this.output = output;
+		this.outputFile = outputfile;
+	}
 
 
 	public Job(String[] cmd, long id, long priority, long time, long group, long groupOrder){

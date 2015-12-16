@@ -91,7 +91,13 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 				JSONObject obj = new JSONObject();
 				obj.put("id", j.getId());
 				obj.put("command", sb.toString());
-				obj.put("executable", j.getExecutable());
+				obj.put("hasFile",j.isHasFile());
+				if(j.getExecutable() != null){
+					obj.put("executable", j.getExecutable().getAbsolutePath());
+				}else{
+					obj.put("executable", null);
+				}
+				
 				obj.put("time",j.getTime());
 				obj.put("priority",j.getPriority());
 				obj.put("group",j.getGroup());
@@ -138,12 +144,18 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 					String[] command = ((String) jsonObject.get("command")).split(" ");
 					long time = (long) jsonObject.get("time");
 					File executable = (File) jsonObject.get("executable");
+					boolean hasFile = (boolean) jsonObject.get("hasFile");
 					long priority = (long) jsonObject.get("priority");
 					long group = (long) jsonObject.get("group");
 					long grouporder = (long) jsonObject.get("grouporder");
 					String output = (String) jsonObject.get("output");
 					File outputfile = (File) jsonObject.get("outputFile");
-					jo = new Job(executable,id,command,priority,time,group,grouporder,output,outputfile);
+					if(executable != null){
+						jo = new Job(executable,id,command,priority,time,group,grouporder,output,outputfile);
+					}else{
+						jo = new Job(command,priority,time,group,grouporder,output,outputfile);
+					}
+					
 					
 					return jo;					
 				} catch (IOException e) {					

@@ -59,6 +59,7 @@ public class GUI_NewJob extends JDialog {
 		sv1 = sv;
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		hasFile = false;
 		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -203,7 +204,7 @@ public class GUI_NewJob extends JDialog {
 		if(hasFile){
 			job = new Job(executable, cmd.split(" "), priority, time, group, groupOrder);
 		}else{
-	
+			System.out.println("teste");
 		job = new Job(cmd.split(" "), priority, time, group, groupOrder);
 		}
 		System.out.println(job);

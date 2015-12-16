@@ -78,7 +78,7 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 				//Escreve json
 				JSONObject obj = new JSONObject();
 				obj.put("id", j.getId());
-				obj.put("command", j.getCommand());
+				obj.put("command", j.getCommand().toString());
 				obj.put("executable", j.getExecutable());
 				obj.put("time",j.getTime());
 				obj.put("priority",j.getPriority());
@@ -107,8 +107,8 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 	
 	public boolean RemoveJob(String jobname){
 		String id = this.getSvId();
-	  	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP;
-		String remove = diretorio+SEP+"Server0"+SEP+jobname;
+	  	String dir = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP;
+		String remove = dir+SEP+"Server0"+SEP+jobname;
 		File f = new File(remove);		
 		return f.delete();		
 		

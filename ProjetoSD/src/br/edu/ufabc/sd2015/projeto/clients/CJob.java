@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
@@ -45,36 +46,34 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 		System.out.println("Entrou aqui");
 		
 		try{
-		//process construction
-			
-		List<String> cmds = Arrays.asList(j.getCommand());
-
-		ProcessBuilder procbuilder = new ProcessBuilder("/bin/bash");
-		procbuilder.command(cmds);
+		//process construction					
+		StringBuilder sb = new StringBuilder();
+		Arrays.asList(j.getCommand()).forEach(s -> sb.append(s+" "));
+		sb.deleteCharAt(sb.length()-1);
+		String cmd = sb.toString();
+		ProcessBuilder procbuilder = new ProcessBuilder("/bin/bash","-c", cmd);
 		System.out.println("cooooo::: "+procbuilder.command().toString());
 		if(j.isHasFile()){
 			procbuilder.directory(j.getExecutable());
 		}else{
 			procbuilder.directory(new File(System.getProperty("user.home")));
-		}
-		
+		}		
 		procbuilder.redirectErrorStream(true);
 		//Process execution
-		Process pro = procbuilder.start();
 		//Read output
 		
-	    InputStream is = pro.getInputStream();
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-        String output = "";
-        String line;
-        System.out.printf("Output of running %s is:\n",j.getCommand());
-        while ((line = br.readLine()) != null) {
-        	output += line;
-        }
-        
-        int exitValue = pro.waitFor();
+		File tempFile = new File("/tmp/job").createTempFile("job", "tmp");
+		StringBuilder sb2 = new StringBuilder();
+		procbuilder.redirectOutput(tempFile);
+		//Process execution
+		Process pro = procbuilder.start();
+		int exitValue = pro.waitFor();
+		List<String> text = Files.readAllLines(tempFile.toPath());
+		text.forEach(S -> sb2.append(S+"\n"));
+		String output = sb2.toString();
+
             System.out.println("\n\nExit Value is " + exitValue);
+            System.out.println("\nsdtout:\n"+output);
             j.setOutput(output);
             //j.setOutputFile(outputFile);
             return j;

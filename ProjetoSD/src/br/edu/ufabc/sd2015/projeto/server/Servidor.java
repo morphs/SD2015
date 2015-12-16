@@ -80,7 +80,7 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 					System.out.println(s);
 					sb.append(s+" ");
 				}				
-				
+				sb.deleteCharAt(sb.length()-1);
 				//Escreve json
 				JSONObject obj = new JSONObject();
 				obj.put("id", j.getId());
@@ -130,11 +130,6 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 					JSONObject jsonObject = (JSONObject) obj;
 					long id = (long) jsonObject.get("id");
 					String[] command = ((String) jsonObject.get("command")).split(" ");
-					
-					for (int i = 0; i < command.length; i++) {
-						System.out.println("parser::: " +command[i]);
-					}
-					
 					long time = (long) jsonObject.get("time");
 					File executable = (File) jsonObject.get("executable");
 					long priority = (long) jsonObject.get("priority");

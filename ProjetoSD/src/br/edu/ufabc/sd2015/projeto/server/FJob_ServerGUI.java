@@ -1,48 +1,38 @@
 package br.edu.ufabc.sd2015.projeto.server;
-import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Insets;
+import javax.swing.JFrame;
 import javax.swing.JList;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
-public class FJob_ServerGUI extends JFrame {
+import br.edu.ufabc.sd2015.projeto.clients.CJob;
+import br.edu.ufabc.sd2015.projeto.comuns.Job;
+
+public class FJob_ServerGUI extends JFrame implements Runnable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-
+	private Servidor sv;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FJob_ServerGUI frame = new FJob_ServerGUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the frame.
 	 */
-	public FJob_ServerGUI() {
+	public FJob_ServerGUI(Servidor sv) {
+		this.setSv(sv);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 977, 368);
@@ -59,7 +49,7 @@ public class FJob_ServerGUI extends JFrame {
 		JButton btnNewJob = new JButton("New job");
 		btnNewJob.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				GUI_NewJob dialog = new GUI_NewJob();
+				GUI_NewJob dialog = new GUI_NewJob(sv);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			}
@@ -72,7 +62,7 @@ public class FJob_ServerGUI extends JFrame {
 		gbc_btnListclients.gridy = 1;
 		contentPane.add(btnListclients, gbc_btnListclients);
 		
-		JList lClients = new JList();
+		JList<CJob> lClients = new JList<CJob>();
 		GridBagConstraints gbc_lClients = new GridBagConstraints();
 		gbc_lClients.insets = new Insets(0, 0, 5, 5);
 		gbc_lClients.fill = GridBagConstraints.BOTH;
@@ -91,7 +81,7 @@ public class FJob_ServerGUI extends JFrame {
 		gbc_btnListjobs.gridy = 3;
 		contentPane.add(btnListjobs, gbc_btnListjobs);
 		
-		JList lJobs = new JList();
+		JList<Job> lJobs = new JList<Job>();
 		GridBagConstraints gbc_lJobs = new GridBagConstraints();
 		gbc_lJobs.insets = new Insets(0, 0, 5, 5);
 		gbc_lJobs.fill = GridBagConstraints.BOTH;
@@ -117,6 +107,20 @@ public class FJob_ServerGUI extends JFrame {
 		gbc_btnNewJob.gridx = 0;
 		gbc_btnNewJob.gridy = 9;
 		contentPane.add(btnNewJob, gbc_btnNewJob);
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		this.setVisible(true);
+	}
+
+	public Servidor getSv() {
+		return sv;
+	}
+
+	public void setSv(Servidor sv) {
+		this.sv = sv;
 	}
 
 }

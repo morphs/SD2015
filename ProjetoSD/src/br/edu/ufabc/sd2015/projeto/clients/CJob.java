@@ -5,11 +5,41 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
 
-public class CJob {
+public class CJob extends UnicastRemoteObject implements ClientInterface {
 	
-	public Job runCmd(Job j){
+	
+	private static final String SEP = System.getProperty("file.separator");
+    private String diretorio;
+    private String clId;
+    private File folder;
+    
+	public CJob(String id) throws RemoteException{
+		   	
+	    	this.setClId(id);
+	    	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP+id+SEP;
+			folder = new File(diretorio);
+			System.out.println("Criando diretório:" +folder);
+			if(!(folder.exists() && folder.isDirectory())){
+				folder.mkdirs();
+				System.out.println("Diretório criado "+folder);
+			}else{
+				System.out.println("Diretório já existe ou caminho inválido");
+			}
+	    }
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Job runJob(Job j){
 		
 		
 		try{
@@ -54,5 +84,25 @@ public class CJob {
 		}
 		
     }
+
+	@Override
+	public void sayHi(String RMIaddress) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String getClId() {
+		return clId;
+	}
+
+	public void setClId(String clId) {
+		this.clId = clId;
+	}
+
+	@Override
+	public String[] getClientList() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 		
 }

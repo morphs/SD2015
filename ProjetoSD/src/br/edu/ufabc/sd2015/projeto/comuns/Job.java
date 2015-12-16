@@ -4,7 +4,7 @@ import java.io.File;
 public class Job {
 
 	//Vars
-	private  String name;
+	private  int id;
 	private  File executable;
 	private   boolean hasFile;
 	private   String command;
@@ -20,9 +20,9 @@ public class Job {
 
 	//Constructors
 
-	public Job(File executable, String cmd, int priority, int time, int group, int groupOrder){
+	public Job(File executable, int id, String cmd, int priority, int time, int group, int groupOrder){
 		hasFile = true;
-	//	this.name = name;
+		this.setId(id);
 		this.executable = executable;
 		this.command = cmd;
 		this.priority = priority;
@@ -30,9 +30,19 @@ public class Job {
 		this.group = group;
 		this.groupOrder = groupOrder;
 	}
-	public Job(File executable, String cmd, int priority, int time, int group, int groupOrder,String output, File outputfile){
+	public Job(File executable,String cmd, int priority, int time, int group, int groupOrder){
 		hasFile = true;
-	//	this.name = name;
+		this.setId((int)Math.round(Math.random()*10000));
+		this.executable = executable;
+		this.command = cmd;
+		this.priority = priority;
+		this.setTime(time);
+		this.group = group;
+		this.groupOrder = groupOrder;
+	}
+	public Job(File executable, int id, String cmd, int priority, int time, int group, int groupOrder,String output, File outputfile){
+		hasFile = true;
+		this.setId(id);
 		this.executable = executable;
 		this.command = cmd;
 		this.priority = priority;
@@ -44,9 +54,19 @@ public class Job {
 	}
 
 
+	public Job(String cmd, int id, int priority, int time, int group, int groupOrder){
+		this.command = cmd;
+		this.priority = priority;
+		this.setTime(time);
+		this.group = group;
+		this.groupOrder = groupOrder;
+		hasFile = false;
+
+
+	}
 	public Job(String cmd, int priority, int time, int group, int groupOrder){
 		this.command = cmd;
-		//this.name = name;
+		this.setId((int)Math.round(Math.random()*10000));
 		this.priority = priority;
 		this.setTime(time);
 		this.group = group;
@@ -132,21 +152,21 @@ public class Job {
 		this.outputFile = outputFile;
 	}
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 	@Override
 	public String toString() {
-		return "Job [" + (name != null ? "name=" + name + ", " : "")
+		return "Job [" + (id != 0 ? "id=" + id + ", " : "")
 				+ (executable != null ? "executable=" + executable.getName() + ", " : "") + "hasFile=" + hasFile + ", "
 				+ (command != null ? "command=" + command + ", " : "") + "time=" + time + ", group=" + group
 				+ ", groupOrder=" + groupOrder + ", priority=" + priority + ", "
 				+ (output != null ? "output=" + output + ", " : "")
 				+ (outputFile != null ? "outputFile=" + outputFile : "") + "]";
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	//End Gets e Sets

@@ -1,6 +1,7 @@
 package br.edu.ufabc.sd2015.projeto.comuns;
 
 
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -9,9 +10,13 @@ import br.edu.ufabc.sd2015.projeto.comuns.Job;
 public interface ServerInterface extends Remote {
 	
 	//Definições de interface
-	public String[] getList() throws RemoteException;
+	public String[] getJobList() throws RemoteException;
 	
-	public int addJob(Job j) throws RemoteException;	
+	public String[] getClientList() throws RemoteException;
+
+	public String[] getServerList() throws RemoteException;
+	
+	public int addJob(Job j) throws IOException;	
    
 	public int sendJob(Job j) throws RemoteException;	
 	

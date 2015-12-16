@@ -6,24 +6,43 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import br.edu.ufabc.sd2015.projeto.server.Arrumar_Controle;
+import br.edu.ufabc.sd2015.projeto.clients.CJob;
+import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
-import br.edu.ufabc.sd2015.projeto.server.Arrumar_Servidor;
+import br.edu.ufabc.sd2015.projeto.server.Controller;
+import br.edu.ufabc.sd2015.projeto.server.FJob_ServerGUI;
+import br.edu.ufabc.sd2015.projeto.server.Servidor;
 
-public class ServerMain {
+public class Principal{
+	
 	public static void main(String[] args) {
+		int clientsnumber = 3;
+		int serversnumber = 1;
+			
 		try {
-			int clientnumber = 5;
 			//Faz a função do rmiregistry, na porta default 1099
 			LocateRegistry.createRegistry(1099);
-			//Cria o servidor
-			Naming.rebind("rmi://localhost/Servidor/Server"+1+"/", (ServerInterface) new Arrumar_Servidor("Servidor"+1));
-
+			//Cria os  servidores
+			for (int i = 0; i < serversnumber; i++) {
+				Servidor sv =new Servidor("Server"+i);
+				Naming.rebind("rmi://localhost/Servers/Server"+i+"/", (ServerInterface) sv);
+				System.out.println("Rodando sv"+i+" ...");
+				new Thread(() -> new FJob_ServerGUI(sv)).start();
+			}
+	
+			//Cria os clientes
+			for (int i = 0; i < clientsnumber; i++) {
+				Naming.rebind("rmi://localhost/Clients/Client"+i+"/", (ClientInterface) new CJob("Client"+i));
+				System.out.println("Rodando Client"+i+" ...");
+				
+			}
+			
 			//Define o controller
-			ServerInterface controller  = new Arrumar_Controle(clientnumber);
+			ServerInterface controller  = new Controller(serversnumber,clientsnumber);
 			Naming.rebind("rmi://localhost/Servidor/Controller/", controller);
-			System.out.println("Rodando...");
-
+			System.out.println("Rodando controle...");
+			
+			
 		} catch (RemoteException e1) {
 			// TODO Auto-generated catch block
 			System.out.println("Erro de conexão remota:"+e1.getMessage());
@@ -37,15 +56,5 @@ public class ServerMain {
 			System.out.println("Erro de conexão não completada:"+e1.getMessage());
 			e1.printStackTrace();
 		}
-
-
-		//	cli = new Client();
-
-
-
-		//  cli.run();
-
 	}
-
-
 }

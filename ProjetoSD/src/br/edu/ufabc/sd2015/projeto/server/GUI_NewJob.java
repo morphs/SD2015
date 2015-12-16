@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JFormattedTextField;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.rmi.RemoteException;
 import java.awt.event.ActionEvent;
 
 public class GUI_NewJob extends JDialog {
@@ -39,7 +40,6 @@ public class GUI_NewJob extends JDialog {
 	//private File selectedFile;
 
 	//Vars
-	private  String name;
 	private  File executable;
 	private   boolean hasFile;
 	private   String cmd;	
@@ -49,32 +49,17 @@ public class GUI_NewJob extends JDialog {
 	private   int priority;
 	private   String output;
 	private   File outputFile;
+	private Servidor sv1;
 		//End Vars
 	
 	
 	
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			GUI_NewJob dialog = new GUI_NewJob();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
-	 */
-	public GUI_NewJob() {
-		
+	public GUI_NewJob(Servidor sv) {
+		sv1 = sv;
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-		
+		this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -216,7 +201,12 @@ public class GUI_NewJob extends JDialog {
 		job = new Job(cmd, priority, time, group, groupOrder);
 		
 		System.out.println(job);
-		Principal.addJobtoList(job);
+		try {
+			sv1.addJob(job);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -229,6 +219,14 @@ public class GUI_NewJob extends JDialog {
 	        System.exit(-1);
 	    }
 	    return formatter;
+	}
+
+	public Servidor getSv1() {
+		return sv1;
+	}
+
+	public void setSv1(Servidor sv1) {
+		this.sv1 = sv1;
 	}
 
 	

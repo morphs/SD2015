@@ -145,7 +145,13 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 					long id = (long) jsonObject.get("id");
 					String[] command = ((String) jsonObject.get("command")).split(" ");
 					long time = (long) jsonObject.get("time");
-					File executable = new File ((String)jsonObject.get("executable"));
+					File executable;
+					if(jsonObject.get("executable") != null){
+						 executable = new File ((String)jsonObject.get("executable"));
+					}else{
+						executable = null;
+					}
+					
 					boolean hasFile = (boolean) jsonObject.get("hasFile");
 					long priority = (long) jsonObject.get("priority");
 					long group = (long) jsonObject.get("group");

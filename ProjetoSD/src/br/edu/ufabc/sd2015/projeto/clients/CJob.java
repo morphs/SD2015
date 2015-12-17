@@ -49,7 +49,6 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	private static final long serialVersionUID = 1L;
 
 	public Job runJob(Job j){
-		System.out.println("Entrou aqui");
 		
 		try{
 		//process construction					
@@ -57,10 +56,16 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 		Arrays.asList(j.getCommand()).forEach(s -> sb.append(s+" "));
 		sb.deleteCharAt(sb.length()-1);
 		String cmd = sb.toString();
-		ProcessBuilder procbuilder = new ProcessBuilder("/bin/bash","-c", cmd);
+		ProcessBuilder procbuilder;
+		if(j.isHasFile()){
+			procbuilder = new ProcessBuilder("/bin/bash","-c", cmd+" "+j.getExecutable().toString());
+		}else{
+			procbuilder = new ProcessBuilder("/bin/bash","-c", cmd);
+		}
+		
 		System.out.println("cooooo::: "+procbuilder.command().toString());
 		if(j.isHasFile()){
-			procbuilder.directory(j.getExecutable());
+			procbuilder.directory(j.getExecutable().getParentFile());
 		}else{
 			procbuilder.directory(new File(System.getProperty("user.home")));
 		}		

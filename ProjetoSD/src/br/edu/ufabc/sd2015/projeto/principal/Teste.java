@@ -9,7 +9,7 @@ public class Teste {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String[] vec =  { "/bin/sh"," -c", "ls -l" } ;
+		String[] vec =  { "pico /home/morps/desktop/motog.txt" } ;
 		Job j = new Job(vec,1,20,20,10,10);
 		CJob cj;
 		try {

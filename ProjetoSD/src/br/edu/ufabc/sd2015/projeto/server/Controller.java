@@ -12,6 +12,7 @@ import java.util.Arrays;
 import br.edu.ufabc.sd2015.projeto.clients.CJob;
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
+import br.edu.ufabc.sd2015.projeto.comuns.KeyManager;
 import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
 
 
@@ -62,8 +63,9 @@ public class Controller extends UnicastRemoteObject implements ServerInterface{
 	@Override
 	public int sendJob(Job j) throws RemoteException {
 		// TODO Auto-generated method stub
+		KeyManager km = new KeyManager();
 		
-		clients.get(0).runJob(j);
+		clients.get(0).runJob(km.encrypt(j, "SD2015"));
 		return 0;
 	}
 

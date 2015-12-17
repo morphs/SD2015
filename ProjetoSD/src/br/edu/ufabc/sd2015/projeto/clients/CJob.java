@@ -8,8 +8,11 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.crypto.SealedObject;
 
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
@@ -19,6 +22,7 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	
 	
 	private static final String SEP = System.getProperty("file.separator");
+	private final String pw = "SD2015";
     private String diretorio;
     private String clId;
     private File folder;
@@ -29,10 +33,6 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	    	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP+id+SEP;
 			folder = new File(diretorio);
 			System.out.println("Criando diretório:" +folder);
-			KeyManager km = new KeyManager();
-			if(!km.areKeysPresent(folder)){
-				km.generateKey(folder);
-			}
 		
 			if(!(folder.exists() && folder.isDirectory())){
 				folder.mkdirs();
@@ -48,10 +48,12 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Job runJob(Job j){
+	public Job runJob(SealedObject so){
 		
 		try{
-		//process construction					
+		//process construction	
+			KeyManager km = new KeyManager();
+			Job j = km.decrypt(so, pw);
 		StringBuilder sb = new StringBuilder();
 		Arrays.asList(j.getCommand()).forEach(s -> sb.append(s+" "));
 		sb.deleteCharAt(sb.length()-1);
@@ -120,6 +122,8 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	public String getClientName() throws RemoteException {
 		return this.clId;
 	}
+
+
 	
 	
 }

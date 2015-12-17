@@ -15,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import br.edu.ufabc.sd2015.projeto.clients.CJob;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
 
 public class FJob_ServerGUI extends JFrame implements Runnable{
@@ -52,6 +53,14 @@ public class FJob_ServerGUI extends JFrame implements Runnable{
 		gbl_contentPane.rowWeights = new double[]{0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		modelClients = new DefaultListModel<String>();
+		JButton btnNewJob = new JButton("New job");
+		btnNewJob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GUI_NewJob dialog = new GUI_NewJob(sv);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
 		
 		modelJobs = new DefaultListModel<String>();
 		JList<String> lClients = new JList<String>(modelClients);
@@ -125,19 +134,23 @@ public class FJob_ServerGUI extends JFrame implements Runnable{
 		contentPane.add(btnListjobs, gbc_btnListjobs);
 		
 		
-		JButton btnRemoveJob = new JButton("Remove Job");
-		btnRemoveJob.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {		
+		JButton btnReadjob = new JButton("Read Job");
+		btnReadjob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				try {
-				String selected = lJobs.getSelectedValue();
-			      if(sv.RemoveJob(selected)){
-			    	  JOptionPane.showMessageDialog(null,"Job "+selected+" removido com sucesso!");
-			      }
-				}catch (Exception e1){				
+				Job j =	sv.getLog(lJobs.getSelectedValue().toString());
+				JOptionPane.showMessageDialog(null,j.toString());
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
 		});
+		GridBagConstraints gbc_btnReadjob = new GridBagConstraints();
+		gbc_btnReadjob.insets = new Insets(0, 0, 5, 5);
+		gbc_btnReadjob.gridx = 0;
+		gbc_btnReadjob.gridy = 5;
+		contentPane.add(btnReadjob, gbc_btnReadjob);
 		
 		JButton btnSendJob = new JButton("Send Job");
 		btnSendJob.addActionListener(new ActionListener() {
@@ -151,50 +164,38 @@ public class FJob_ServerGUI extends JFrame implements Runnable{
 				}
 			}
 		});
+		GridBagConstraints gbc_btnSendJob = new GridBagConstraints();
+		gbc_btnSendJob.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSendJob.gridx = 0;
+		gbc_btnSendJob.gridy = 6;
+		contentPane.add(btnSendJob, gbc_btnSendJob);
 		
 		
-		JButton btnReadjob = new JButton("Read Job");
-		btnReadjob.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		JButton btnRemoveJob = new JButton("Remove Job");
+		btnRemoveJob.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {		
 				try {
-				Job j =	sv.getLog(lJobs.getSelectedValue().toString());
-				JOptionPane.showMessageDialog(null,j.toString());
-				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
+				String selected = lJobs.getSelectedValue();
+			      if(sv.RemoveJob(selected)){
+			    	  JOptionPane.showMessageDialog(null,"Job "+selected+" removido com sucesso!");
+			      }
+				}catch (Exception e1){				
 					e1.printStackTrace();
 				}
 			}
 		});
-		JButton btnNewJob = new JButton("New job");
-		btnNewJob.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				GUI_NewJob dialog = new GUI_NewJob(sv);
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
-			}
-		});
-		
-			
-			GridBagConstraints gbc_btnNewJob = new GridBagConstraints();
-			gbc_btnNewJob.insets = new Insets(0, 0, 5, 5);
-			gbc_btnNewJob.gridx = 0;
-			gbc_btnNewJob.gridy = 5;
-			contentPane.add(btnNewJob, gbc_btnNewJob);
-		GridBagConstraints gbc_btnReadjob = new GridBagConstraints();
-		gbc_btnReadjob.insets = new Insets(0, 0, 5, 5);
-		gbc_btnReadjob.gridx = 0;
-		gbc_btnReadjob.gridy = 6;
-		contentPane.add(btnReadjob, gbc_btnReadjob);
-		GridBagConstraints gbc_btnSendJob = new GridBagConstraints();
-		gbc_btnSendJob.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSendJob.gridx = 0;
-		gbc_btnSendJob.gridy = 7;
-		contentPane.add(btnSendJob, gbc_btnSendJob);
 		GridBagConstraints gbc_btnRemoveJob = new GridBagConstraints();
-		gbc_btnRemoveJob.insets = new Insets(0, 0, 0, 5);
+		gbc_btnRemoveJob.insets = new Insets(0, 0, 5, 5);
 		gbc_btnRemoveJob.gridx = 0;
-		gbc_btnRemoveJob.gridy = 9;
+		gbc_btnRemoveJob.gridy = 7;
 		contentPane.add(btnRemoveJob, gbc_btnRemoveJob);
+	
+		
+		GridBagConstraints gbc_btnNewJob = new GridBagConstraints();
+		gbc_btnNewJob.insets = new Insets(0, 0, 0, 5);
+		gbc_btnNewJob.gridx = 0;
+		gbc_btnNewJob.gridy = 9;
+		contentPane.add(btnNewJob, gbc_btnNewJob);
 		this.setVisible(true);
 	}
 	

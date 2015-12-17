@@ -5,6 +5,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 import br.edu.ufabc.sd2015.projeto.clients.CJob;
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
@@ -12,6 +13,7 @@ import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
 import br.edu.ufabc.sd2015.projeto.server.Controller;
 import br.edu.ufabc.sd2015.projeto.server.FJob_ServerGUI;
 import br.edu.ufabc.sd2015.projeto.server.Servidor;
+import soa.atomicrmi.TransactionsLock;
 
 public class Principal{
 	
@@ -21,8 +23,9 @@ public class Principal{
 		Servidor[] svs = new Servidor[serversnumber];
 		
 		try {
+			
 			//Faz a função do rmiregistry, na porta default 1099
-			LocateRegistry.createRegistry(1099);
+			Registry reg = LocateRegistry.createRegistry(1099);
 			//Cria os  servidores
 			for (int i = 0; i < serversnumber; i++) {
 				svs[i] = new Servidor("Server"+i);
@@ -41,6 +44,8 @@ public class Principal{
 			ServerInterface controller  = new Controller(serversnumber,clientsnumber);
 			Naming.rebind("rmi://localhost/Servidor/Controller/", controller);
 			System.out.println("Rodando controle...");
+			
+			TransactionsLock.initialize(reg);
 			
 			//Executa a interface do servidor
 			for (int i = 0; i < serversnumber; i++) {

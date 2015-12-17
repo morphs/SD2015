@@ -1,14 +1,11 @@
 package br.edu.ufabc.sd2015.projeto.clients;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-import java.security.PublicKey;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,8 +14,10 @@ import javax.crypto.SealedObject;
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
 import br.edu.ufabc.sd2015.projeto.comuns.KeyManager;
+import soa.atomicrmi.Transaction;
+import soa.atomicrmi.TransactionalUnicastRemoteObject;
 
-public class CJob extends UnicastRemoteObject implements ClientInterface {
+public class CJob extends TransactionalUnicastRemoteObject implements ClientInterface {
 	
 	
 	private static final String SEP = System.getProperty("file.separator");
@@ -26,9 +25,10 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
     private String diretorio;
     private String clId;
     private File folder;
+    private int status;
     
 	public CJob(String id) throws RemoteException{
-		   	
+		   	status = 0;
 	    	this.setClId(id);
 	    	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP+id+SEP;
 			folder = new File(diretorio);
@@ -49,7 +49,7 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	private static final long serialVersionUID = 1L;
 
 	public Job runJob(SealedObject so){
-		
+		status = 1;
 		try{
 		//process construction	
 			KeyManager km = new KeyManager();
@@ -89,7 +89,9 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
             System.out.println("\nsdtout:\n"+output);
             j.setOutput(output);
             //j.setOutputFile(outputFile);
+            status = 0;
             return j;
+           
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -104,12 +106,6 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 		
     }
 
-	@Override
-	public void sayHi(String RMIaddress) throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public String getClId() {
 		return clId;
 	}
@@ -121,6 +117,12 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 	@Override
 	public String getClientName() throws RemoteException {
 		return this.clId;
+	}
+
+	@Override
+	public int getStatus() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

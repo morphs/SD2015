@@ -6,17 +6,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
-import br.edu.ufabc.sd2015.projeto.comuns.KeyManager;
 import br.edu.ufabc.sd2015.projeto.comuns.ServerInterface;
+import soa.atomicrmi.TransactionalUnicastRemoteObject;
 
-public class Servidor extends UnicastRemoteObject implements ServerInterface{
+public class Servidor extends TransactionalUnicastRemoteObject implements ServerInterface{
 		
 	/**
 	 * 
@@ -38,8 +36,6 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
     	diretorio = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP+id+SEP;
 		folder = new File(diretorio);
 		System.out.println("Criando diretório:" +folder);
-		KeyManager km = new KeyManager();
-		
 		if(!(folder.exists() && folder.isDirectory())){
 			folder.mkdirs();
 			System.out.println("Diretório criado "+folder);

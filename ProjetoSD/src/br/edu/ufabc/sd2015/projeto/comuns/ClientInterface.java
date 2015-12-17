@@ -13,7 +13,7 @@ public interface ClientInterface extends Remote {
 	
 	public String getClientName() throws RemoteException;
 	
-	public void sayHi(String RMIaddress) throws RemoteException;
+	public int getStatus() throws RemoteException;
 	
 
 }

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -85,7 +86,8 @@ public class CJob extends TransactionalUnicastRemoteObject implements ClientInte
 		if(!exitValue){
 			pro.destroy();
 			status = 0;
-			return null;
+			List<String> retorno = new ArrayList<String>();
+	         return retorno;
 		}
 		List<String> text = Files.readAllLines(tempFile.toPath());
 		text.forEach(S -> sb2.append(S+"\n"));
@@ -102,12 +104,14 @@ public class CJob extends TransactionalUnicastRemoteObject implements ClientInte
             // TODO Auto-generated catch block
             e.printStackTrace();
             System.out.println("The execution was interrupted:"+e.getMessage());
-            return null;
+            List<String> retorno = new ArrayList<String>();
+            return retorno;
         } catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			 System.out.println("Input or output error:"+e.getMessage());
-			return null;
+			 List<String> retorno = new ArrayList<String>();
+	         return retorno;
 		}
 		
     }

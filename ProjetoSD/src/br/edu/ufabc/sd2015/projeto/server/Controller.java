@@ -79,7 +79,6 @@ public class Controller extends TransactionalUnicastRemoteObject implements Serv
 			if (clients.get(i).getStatus() == 0) {
 				try {
 					System.out.println(Arrays.toString(reg.list()));
-					System.out.println("Transa gostosa");
 					cli = (ClientInterface) reg.lookup("Clients/"+clients.get(i).getClientName()+System.getProperty("file.separator"));
 					transaction = new Transaction(reg);
 				

@@ -60,9 +60,9 @@ public class CJob extends TransactionalUnicastRemoteObject implements ClientInte
 		String cmd = sb.toString();
 		ProcessBuilder procbuilder;
 		if(j.isHasFile()){
-			procbuilder = new ProcessBuilder("/bin/bash","-c", cmd+" "+j.getExecutable().toString());
+			procbuilder = new ProcessBuilder("/bin/bash","-c","nice -n "+j.getPriority()+" "+ cmd+" "+j.getExecutable().toString());
 		}else{
-			procbuilder = new ProcessBuilder("/bin/bash","-c", cmd);
+			procbuilder = new ProcessBuilder("/bin/bash","-c","nice -n "+j.getPriority()+" "+ cmd);
 		}
 		
 		System.out.println("cooooo::: "+procbuilder.command().toString());

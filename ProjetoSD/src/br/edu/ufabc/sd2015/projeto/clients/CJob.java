@@ -8,6 +8,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.crypto.SealedObject;
 
@@ -80,7 +81,12 @@ public class CJob extends TransactionalUnicastRemoteObject implements ClientInte
 		procbuilder.redirectOutput(tempFile);
 		//Process execution
 		Process pro = procbuilder.start();
-		int exitValue = pro.waitFor();
+		boolean exitValue = pro.waitFor(j.getTime(),TimeUnit.SECONDS);
+		if(!exitValue){
+			pro.destroy();
+			status = 0;
+			return null;
+		}
 		List<String> text = Files.readAllLines(tempFile.toPath());
 		text.forEach(S -> sb2.append(S+"\n"));
 		String output = sb2.toString();

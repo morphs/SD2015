@@ -155,7 +155,7 @@ public class Servidor extends TransactionalUnicastRemoteObject implements Server
 					if(executable != null){
 						jo = new Job(executable,id,command,priority,time,group,grouporder,output,outputfile);
 					}else{
-						jo = new Job(command,priority,time,group,grouporder,output,outputfile);
+						jo = new Job(command,id,priority,time,group,grouporder,output,outputfile);
 					}
 					
 					

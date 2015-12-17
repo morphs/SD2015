@@ -48,7 +48,7 @@ public class CJob extends TransactionalUnicastRemoteObject implements ClientInte
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Job runJob(SealedObject so){
+	public List<String> runJob(SealedObject so){
 		status = 1;
 		try{
 		//process construction	
@@ -90,7 +90,7 @@ public class CJob extends TransactionalUnicastRemoteObject implements ClientInte
             j.setOutput(output);
             //j.setOutputFile(outputFile);
             status = 0;
-            return j;
+            return text;
            
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block

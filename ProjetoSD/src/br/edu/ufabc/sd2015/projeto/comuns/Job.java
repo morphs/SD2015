@@ -58,7 +58,7 @@ public class Job implements java.io.Serializable {
 		this.outputFile = outputfile;
 	}
 	
-	public Job(String[] cmd, long priority, long time, long group, long groupOrder,String output, File outputfile){
+	public Job(String[] cmd,long id, long priority, long time, long group, long groupOrder,String output, File outputfile){
 		hasFile = false;
 		this.setId(id);
 		this.executable = executable;

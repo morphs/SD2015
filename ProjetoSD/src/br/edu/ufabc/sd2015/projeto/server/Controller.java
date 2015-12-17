@@ -1,14 +1,21 @@
 package br.edu.ufabc.sd2015.projeto.server;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.List;
 
 import br.edu.ufabc.sd2015.projeto.comuns.ClientInterface;
 import br.edu.ufabc.sd2015.projeto.comuns.Job;
@@ -22,7 +29,7 @@ public class Controller extends TransactionalUnicastRemoteObject implements Serv
 	 * 
 	 */
 	private static final long serialVersionUID = -5716897884693689319L;
-
+	private static final String SEP = System.getProperty("file.separator");
 	ArrayList<ServerInterface> servers = new ArrayList<ServerInterface>();
 	ArrayList<ClientInterface> clients = new ArrayList<ClientInterface>();
 	
@@ -86,7 +93,21 @@ public class Controller extends TransactionalUnicastRemoteObject implements Serv
 				
 				KeyManager km = new KeyManager();
 				transaction.start();
-				cli.runJob(km.encrypt(j, "SD2015"));
+				//write sdtOut
+				List<String> Sdtout = cli.runJob(km.encrypt(j, "SD2015"));
+				String path = System.getProperty("user.home")+SEP+"ServidorDeJobs"+SEP+"Jobs"+SEP+"job_"+String.valueOf(j.getId())
+				+SEP+new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime())+".txt";
+				File f = new File(path);
+				try {
+					Files.createDirectories(Paths.get(path).getParent());
+					f.createNewFile();
+					Files.write(Paths.get(path), Sdtout);
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
+				
+				
 				transaction.commit();
 				return 1;
 
@@ -100,6 +121,13 @@ public class Controller extends TransactionalUnicastRemoteObject implements Serv
 		return 0;
 	}
 
+	
+	
+	public void writeSdtOut(List<String> sdtout){
+		
+	}
+	
+	
 	@Override
 	public int finishJob(Job j) throws RemoteException {
 		// TODO Auto-generated method stub

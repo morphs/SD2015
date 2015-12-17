@@ -19,17 +19,19 @@ public class KeyManager {
 
 	public static final String PUBLIC_KEY_FILE = "public.key";
 	
+	public static final String SEP = System.getProperty("file.separator");
+	
 	//End Vars
 	
 	
-	public static void generateKey(File folder) {
+	public void generateKey(File folder) {
 	    try {
 	      final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
 	      keyGen.initialize(1024);
 	      final KeyPair key = keyGen.generateKeyPair();
 
-	      File privateKeyFile = new File(folder+System.getProperty("file.separator")+PRIVATE_KEY_FILE);
-	      File publicKeyFile = new File(folder+System.getProperty("file.separator")+PUBLIC_KEY_FILE);
+	      File privateKeyFile = new File(folder+SEP+PRIVATE_KEY_FILE);
+	      File publicKeyFile = new File(folder+SEP+PUBLIC_KEY_FILE);
 
 	      // Create files to store public and private key
 	      if (privateKeyFile.getParentFile() != null) {
@@ -59,10 +61,10 @@ public class KeyManager {
 
 	  }
 	
-	public static boolean areKeysPresent() {
+	public boolean areKeysPresent(File folder) {
 
-	    File privateKey = new File(PRIVATE_KEY_FILE);
-	    File publicKey = new File(PUBLIC_KEY_FILE);
+	    File privateKey = new File(folder+SEP+PRIVATE_KEY_FILE);
+	    File publicKey = new File(folder+SEP+PUBLIC_KEY_FILE);
 
 	    if (privateKey.exists() && publicKey.exists()) {
 	      return true;
@@ -70,7 +72,7 @@ public class KeyManager {
 	    return false;
 	  }
 	
-	public static byte[] encrypt(String text, PublicKey key) {
+	public byte[] encrypt(String text, PublicKey key) {
 	    byte[] cipherText = null;
 	    try {
 	      // get an RSA cipher object and print the provider
@@ -84,8 +86,9 @@ public class KeyManager {
 	    return cipherText;
 	  }
 	
-	 public static String decrypt(byte[] text, PrivateKey key) {
+	 public  Job decrypt(byte[] text, PrivateKey key) {
 		    byte[] dectyptedText = null;
+		    Job j = null;
 		    try {
 		      // get an RSA cipher object and print the provider
 		      final Cipher cipher = Cipher.getInstance(ALGORITHM);
@@ -98,7 +101,8 @@ public class KeyManager {
 		      ex.printStackTrace();
 		    }
 
-		    return new String(dectyptedText);
+		   // return new String(dectyptedText);
+		    return j;
 		  }
 
 }

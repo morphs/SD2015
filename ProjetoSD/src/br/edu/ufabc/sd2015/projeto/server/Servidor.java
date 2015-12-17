@@ -39,7 +39,9 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 		folder = new File(diretorio);
 		System.out.println("Criando diretório:" +folder);
 		KeyManager km = new KeyManager();
-		km.generateKey(folder);
+		if(!km.areKeysPresent(folder)){
+			km.generateKey(folder);
+		}
 		if(!(folder.exists() && folder.isDirectory())){
 			folder.mkdirs();
 			System.out.println("Diretório criado "+folder);
@@ -143,7 +145,7 @@ public class Servidor extends UnicastRemoteObject implements ServerInterface{
 					long id = (long) jsonObject.get("id");
 					String[] command = ((String) jsonObject.get("command")).split(" ");
 					long time = (long) jsonObject.get("time");
-					File executable = (File) jsonObject.get("executable");
+					File executable = new File ((String)jsonObject.get("executable"));
 					boolean hasFile = (boolean) jsonObject.get("hasFile");
 					long priority = (long) jsonObject.get("priority");
 					long group = (long) jsonObject.get("group");

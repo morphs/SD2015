@@ -30,7 +30,10 @@ public class CJob extends UnicastRemoteObject implements ClientInterface {
 			folder = new File(diretorio);
 			System.out.println("Criando diretório:" +folder);
 			KeyManager km = new KeyManager();
-			km.generateKey(folder);
+			if(!km.areKeysPresent(folder)){
+				km.generateKey(folder);
+			}
+		
 			if(!(folder.exists() && folder.isDirectory())){
 				folder.mkdirs();
 				System.out.println("Diretório criado "+folder);

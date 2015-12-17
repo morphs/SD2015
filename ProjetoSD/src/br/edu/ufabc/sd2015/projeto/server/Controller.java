@@ -62,6 +62,7 @@ public class Controller extends UnicastRemoteObject implements ServerInterface{
 	@Override
 	public int sendJob(Job j) throws RemoteException {
 		// TODO Auto-generated method stub
+		
 		clients.get(0).runJob(j);
 		return 0;
 	}
